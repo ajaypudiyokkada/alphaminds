@@ -87,7 +87,7 @@ NavigationContainer (custom dark theme)
 Tab icons are unicode glyphs (a placeholder noted in a code comment). `@expo/vector-icons` is used on the Profile screen.
 
 ### 4.4 Networking ([src/api/client.js](src/api/client.js))
-- `BASE_URL = "http://172.20.10.3:8000/api/v1"` (**hardcoded LAN IP**).
+- `BASE_URL = process.env.EXPO_PUBLIC_API_URL` (set in `mobile/.env`; see `.env.example`).
 - Request interceptor attaches `Authorization: Bearer <access_token>`.
 - Response interceptor: on a 401 (once per request, using an `_retry` flag) it POSTs `{refresh}` to `/auth/refresh/`, stores the new access token, and retries. If the refresh fails it clears the tokens and rejects the error. It does **not** update `AuthContext`, so the UI stays on the logged-in stack until the next navigation or restart.
 - Timeout is 15 s. `auth.js` uses bare `axios` instead of the `client` instance, so the interceptors don't apply to login, logout, forgot-password or the refresh call.
@@ -165,4 +165,4 @@ npm install
 # set BASE_URL in src/api/client.js to a host reachable from the device or emulator
 npm start        # then press a / i / w, or scan the QR code in Expo Go
 ```
-The backend must be reachable at `BASE_URL` (default `http://172.20.10.3:8000/api/v1`).
+The backend must be reachable at `BASE_URL` (the value of `EXPO_PUBLIC_API_URL`, e.g. `http://<your-pc-ip>:8000/api/v1`).

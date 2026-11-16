@@ -1,10 +1,25 @@
 from pathlib import Path
 
+import environ
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-change-me'
-DEBUG = True
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.0.132", "172.20.10.3"]
+env = environ.Env(
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+    DB_ENGINE=(str, 'django.db.backends.mysql'),
+    DB_HOST=(str, '127.0.0.1'),
+    DB_PORT=(str, '3306'),
+    CORS_ALLOWED_ORIGINS=(list, []),
+    CORS_ALLOW_ALL_ORIGINS=(bool, False),
+    JWT_ACCESS_LIFETIME_MINUTES=(int, 60),
+    JWT_REFRESH_LIFETIME_DAYS=(int, 7),
+)
+environ.Env.read_env(BASE_DIR / '.env')
+
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -58,25 +73,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'alphaminds.wsgi.application'
 ASGI_APPLICATION = 'alphaminds.asgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'alphaminds',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "alphamindsdb",
-        "USER": "amdbadmin",
-        "PASSWORD": "!lellowphone",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
+        "ENGINE": env('DB_ENGINE'),
+        "NAME": env('DB_NAME'),
+        "USER": env('DB_USER'),
+        "PASSWORD": env('DB_PASSWORD'),
+        "HOST": env('DB_HOST'),
+        "PORT": env('DB_PORT'),
         "OPTIONS": {
             "charset": "utf8mb4",
         },
@@ -120,15 +124,16 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env('JWT_ACCESS_LIFETIME_MINUTES')),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=env('JWT_REFRESH_LIFETIME_DAYS')),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": False,
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
-CORS_ALLOW_ALL_ORIGINS = True  # dev — tighten in production
+CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS')
+CORS_ALLOW_ALL_ORIGINS = env('CORS_ALLOW_ALL_ORIGINS')  # dev only — tighten in production
 
 # ── Email ─────────────────────────────────────────────────────────────────────
 # Change to smtp backend + credentials for production
