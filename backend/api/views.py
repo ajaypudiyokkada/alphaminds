@@ -9,7 +9,6 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.forms import PasswordResetForm
 
 from assessments.models import AssessmentSession
-from core.choices import AssessmentSessionStatusChoices
 from frontend.models import LeadInquiry
 
 from .serializers import (
@@ -61,30 +60,6 @@ class LoginView(APIView):
         )
 
 
-class RefreshView(APIView):
-    permission_classes = [AllowAny]
-
-    @extend_schema(
-        request=inline_serializer("RefreshRequest", {"refresh": drf_serializers.CharField()}),
-        responses={200: inline_serializer("RefreshResponse", {"access": drf_serializers.CharField()}), 400: _Detail, 401: _Detail},
-    )
-    def post(self, request):
-        token = request.data.get("refresh")
-        if not token:
-            return Response(
-                {"detail": "refresh token required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        try:
-            refresh = RefreshToken(token)
-            return Response({"access": str(refresh.access_token)})
-        except Exception:
-            return Response(
-                {"detail": "Invalid or expired refresh token."},
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-
 class ForgotPasswordView(APIView):
     permission_classes = [AllowAny]
 
@@ -111,7 +86,9 @@ class ForgotPasswordView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    # No access token required: holding the refresh token is the proof, and logout
+    # must still work after the access token has expired.
+    permission_classes = [AllowAny]
 
     @extend_schema(
         request=inline_serializer("LogoutRequest", {"refresh": drf_serializers.CharField(required=False)}),
@@ -175,11 +152,8 @@ class AthleteDashboardView(APIView):
         )
 
         recent_sessions = (
-            AssessmentSession.objects.filter(
-                athlete=athlete,
-                status=AssessmentSessionStatusChoices.PUBLISHED,
-                is_active=True,
-            )
+            AssessmentSession.objects.visible_to_athlete()
+            .filter(athlete=athlete)
             .select_related("protocol", "protocol__framework", "protocol__framework__domain")
             .order_by("-assessed_on")[:5]
         )
@@ -208,7 +182,8 @@ class AthleteSessionListView(APIView):
             )
 
         sessions = (
-            AssessmentSession.objects.filter(athlete=athlete, is_active=True)
+            AssessmentSession.objects.visible_to_athlete()
+            .filter(athlete=athlete)
             .select_related("protocol", "protocol__framework", "protocol__framework__domain")
             .order_by("-assessed_on")
         )
@@ -228,12 +203,12 @@ class AthleteSessionDetailView(APIView):
             )
 
         try:
-            session = AssessmentSession.objects.select_related(
+            session = AssessmentSession.objects.visible_to_athlete().select_related(
                 "protocol",
                 "protocol__framework",
                 "protocol__framework__domain",
                 "sport",
-            ).get(id=session_id, athlete=athlete, is_active=True)
+            ).get(id=session_id, athlete=athlete)
         except AssessmentSession.DoesNotExist:
             return Response({"detail": "Session not found."}, status=status.HTTP_404_NOT_FOUND)
 

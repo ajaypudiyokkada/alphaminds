@@ -182,47 +182,36 @@ paths:
               $ref: '#/components/schemas/LogoutRequest'
       security:
       - jwtAuth: []
+      - {}
       responses:
         '204':
           description: No content
   /api/v1/auth/refresh/:
     post:
       operationId: auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
       tags:
       - auth
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RefreshRequest'
+              $ref: '#/components/schemas/TokenRefresh'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/RefreshRequest'
+              $ref: '#/components/schemas/TokenRefresh'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RefreshRequest'
+              $ref: '#/components/schemas/TokenRefresh'
         required: true
-      security:
-      - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RefreshResponse'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Detail'
-          description: ''
-        '401':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Detail'
+                $ref: '#/components/schemas/TokenRefresh'
           description: ''
   /api/v1/leads/:
     post:
@@ -670,20 +659,6 @@ components:
       - metric_name
       - units
       - value_data_type
-    RefreshRequest:
-      type: object
-      properties:
-        refresh:
-          type: string
-      required:
-      - refresh
-    RefreshResponse:
-      type: object
-      properties:
-        access:
-          type: string
-      required:
-      - access
     SessionStatusEnum:
       enum:
       - draft
@@ -700,6 +675,17 @@ components:
         * `published` - Published
         * `cancelled` - Cancelled
         * `invalidated` - Invalidated
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
     ValueDataTypeEnum:
       enum:
       - integer

@@ -1,39 +1,32 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { BASE_URL } from "./client";
+import client from "./client";
+import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "./tokens";
 
 export async function login(username, password) {
-  const { data } = await axios.post(`${BASE_URL}/auth/login/`, { username, password });
-  await AsyncStorage.setItem("access_token", data.access);
-  await AsyncStorage.setItem("refresh_token", data.refresh);
+  const { data } = await client.post("/auth/login/", { username, password });
+  await setTokens({ access: data.access, refresh: data.refresh });
   return data;
 }
 
 export async function logout() {
-  const refresh = await AsyncStorage.getItem("refresh_token");
   try {
+    const refresh = await getRefreshToken();
     if (refresh) {
-      const token = await AsyncStorage.getItem("access_token");
-      await axios.post(
-        `${BASE_URL}/auth/logout/`,
-        { refresh },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await client.post("/auth/logout/", { refresh });
     }
   } catch {
     // best-effort
   } finally {
-    await AsyncStorage.multiRemove(["access_token", "refresh_token"]);
+    await clearTokens();
   }
 }
 
 export async function forgotPassword(email) {
-  const { data } = await axios.post(`${BASE_URL}/auth/forgot-password/`, { email });
+  const { data } = await client.post("/auth/forgot-password/", { email });
   return data;
 }
 
 export async function getStoredTokens() {
-  const access = await AsyncStorage.getItem("access_token");
-  const refresh = await AsyncStorage.getItem("refresh_token");
+  const access = await getAccessToken();
+  const refresh = await getRefreshToken();
   return { access, refresh };
 }

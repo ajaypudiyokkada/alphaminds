@@ -11,6 +11,7 @@ This document describes what the backend actually returns, verified with the Dja
 
 - **Auth:** protected endpoints need `Authorization: Bearer <access>`. Access tokens last `JWT_ACCESS_LIFETIME_MINUTES` (default 60), refresh tokens `JWT_REFRESH_LIFETIME_DAYS` (default 7).
 - **Errors:** `{ "detail": "<message>" }` with 400, 401 or 404. Validation errors on `/leads/` are `{ "<field>": ["<message>", ...] }` with 400.
+- **Token storage (mobile):** access and refresh tokens are kept in expo-secure-store. On a 401 the client makes a single refresh call (parallel 401s share it), stores both the new access and the rotated refresh token, and retries. If the refresh is rejected, tokens are cleared and the app returns to Login.
 - **Protected endpoints:** 401 `{ "detail": "..." }` when the token is missing, and `{ "detail": "...", "code": "token_not_valid", ... }` when it is invalid or expired. The mobile client then calls `/auth/refresh/` once and retries.
 - **Athlete endpoints** need a user linked to an athlete. Otherwise 404 `{ "detail": "No athlete profile linked to this account." }`.
 - **Dates:** `YYYY-MM-DD` for dates, ISO 8601 for datetimes.
@@ -24,15 +25,16 @@ Request: `{ "username": string, "password": string }`
 400 (missing field) / 401 (bad credentials): `{ "detail": string }`
 
 ### POST `/auth/refresh/`  (public)
+Standard simplejwt `TokenRefreshView`. Request: `{ "refresh": string }`
+
+200: `{ "access": string, "refresh": string }`. **The refresh token is rotated:** the old one is blacklisted immediately and the client must store the new one. Reusing an old refresh token returns 401.
+400 (field missing): `{ "refresh": ["This field is required."] }`
+401 (invalid, expired or blacklisted token): `{ "detail": string, "code": "token_not_valid" }`
+
+### POST `/auth/logout/`  (public)
 Request: `{ "refresh": string }`
 
-200: `{ "access": string }`. The refresh token is not rotated; keep using the same one.
-400 / 401: `{ "detail": string }`
-
-### POST `/auth/logout/`  (Bearer)
-Request: `{ "refresh": string }` (optional)
-
-204, no body. Currently best-effort and does **not** invalidate the refresh token (see "Open decisions").
+204, no body. The refresh token is blacklisted, so a later `/auth/refresh/` with it returns 401. No access token is required (holding the refresh token is the proof, and logout must work after the access token has expired). An invalid token is ignored and still returns 204.
 
 ### POST `/auth/forgot-password/`  (public)
 Request: `{ "email": string }`
@@ -61,20 +63,22 @@ Request: `{ "email": string }`
 {
   "athlete": Athlete,
   "primary_enrollment": Enrollment | null,
-  "recent_sessions": [SessionSummary]      // up to 5, published only, newest first
+  "recent_sessions": [SessionSummary]      // up to 5, published or completed, newest first
 }
 ```
 Enrollment: `{ "id": int, "sport_name": string, "center_name": string, "start_date": date, "end_date": date | null, "status": "active" | "inactive" | "completed" | "suspended" | "dropped", "batch_name": string }`. Only an active enrollment is returned as `primary_enrollment`.
 
 ### GET `/athlete/sessions/`
-200: `[SessionSummary]`, newest first, all statuses the athlete has (currently `completed` and `published` in the data).
+200: `[SessionSummary]`, newest first.
 
-SessionSummary: `{ "id": int, "session_uuid": uuid, "assessed_on": datetime, "status": "draft" | "booked" | "completed" | "published" | "cancelled" | "invalidated", "protocol_name": string, "framework_name": string, "domain_name": string }`
+**Visibility rule (all athlete endpoints):** an athlete only ever sees sessions with `status` `published` or `completed` (and `is_active`). Sessions in any other status (`draft`, `booked`, `cancelled`, `invalidated`) are absent from the list and the dashboard, and their detail returns 404. The rule lives in one place: `AssessmentSession.objects.visible_to_athlete()`.
+
+SessionSummary: `{ "id": int, "session_uuid": uuid, "assessed_on": datetime, "status": "completed" | "published", "protocol_name": string, "framework_name": string, "domain_name": string }`
 
 ### GET `/athlete/sessions/{session_id}/`
 200: SessionSummary plus `"sport_name": string`, `"notes": string`, `"metric_values": [Metric]`.
-`metric_values` is `[]` unless `status == "published"`.
-404: `{ "detail": "Session not found." }` (also for another athlete's session).
+`metric_values` is `[]` unless `status == "published"` (completed sessions are viewable but their metrics are only released once published).
+404: `{ "detail": "Session not found." }` (also for another athlete's session and for any status other than `published` / `completed`).
 
 Metric: `{ "id": int, "metric_name": string, "metric_label": string, "value_data_type": "integer" | "decimal" | "text" | "boolean" | "date" | "json", "numeric_value": number | null, "text_value": string, "boolean_value": bool | null, "date_value": date | null, "display_value": string, "units": string, "interpretation_direction": string, "is_higher_better": bool, "sequence_no": int, "notes": string }`
 
@@ -115,10 +119,10 @@ Status is OK (both sides agree), unused (backend sends it, mobile ignores it) or
 | auth/login | access, refresh | returned | stored in AsyncStorage | OK |
 | auth/login | athlete_id, full_name | returned | `AuthContext` user | OK |
 | auth/login | detail (400/401) | returned | shown on login screen | OK |
-| auth/refresh | refresh | required | sent from AsyncStorage | OK |
+| auth/refresh | refresh | required | sent from secure store | OK |
 | auth/refresh | access | returned | stored, request retried | OK |
-| auth/refresh | refresh (rotation) | `ROTATE_REFRESH_TOKENS=True` in settings, but the view returns only `access` | keeps old refresh | unused setting (no impact) |
-| auth/logout | refresh | read, then `.blacklist()` | sent with Bearer | mismatch: blacklist app not installed, so the call silently does nothing (decision needed) |
+| auth/refresh | refresh (rotated) | returned, old one blacklisted | stored (fixed in step 5) | OK |
+| auth/logout | refresh | read and blacklisted | sent, no Bearer needed | OK (fixed in step 5) |
 | auth/forgot-password | email | required | sent | OK |
 | auth/forgot-password | detail | returned | not read | unused |
 | athlete/me | all fields | returned | `getMe()` defined, never called | unused (endpoint) |
@@ -129,7 +133,7 @@ Status is OK (both sides agree), unused (backend sends it, mobile ignores it) or
 | athlete/dashboard | recent_sessions[].id, status, assessed_on, domain_name, protocol_name, framework_name | returned | read | OK |
 | athlete/dashboard | recent_sessions[].session_uuid | returned | not read | unused |
 | athlete/sessions | id, status, assessed_on, domain_name, protocol_name, framework_name | returned | read | OK |
-| athlete/sessions | status = cancelled / invalidated | can be returned | no style for them, falls back to the "draft" look | mismatch (minor, decision needed: should athletes see these?) |
+| athlete/sessions | status | only `published` / `completed` (fixed in step 5) | styles for both | OK |
 | athlete/sessions | session_uuid | returned | not read | unused |
 | athlete/sessions/{id} | sport_name, notes, assessed_on, domain/protocol/framework names, status | returned | read | OK |
 | athlete/sessions/{id} | metric_values[].id, metric_label, metric_name, display_value, units | returned | read | OK |
@@ -142,7 +146,6 @@ Status is OK (both sides agree), unused (backend sends it, mobile ignores it) or
 | leads | 400 field errors | `{field: [msg]}` | read for inquiry_types, full_name, email, mobile_number, date_of_birth, parent_mobile, athlete_sport, academy_name, academy_city | OK |
 | leads | 400 errors for gender, pincode, city, state, message | possible | not displayed | unused (cannot occur with current UI values) |
 
-## Open decisions
+## Notes
 
-1. **Logout does not revoke tokens.** `LogoutView` calls `RefreshToken(...).blacklist()`, but `rest_framework_simplejwt.token_blacklist` is not in `INSTALLED_APPS`, so the exception is swallowed and the refresh token stays valid until it expires. Fixing it adds the blacklist app and its migrations (new tables). Needs a decision.
-2. **Which session statuses should athletes see?** The list endpoint returns every active session of the athlete (currently `completed` and `published`); the dashboard only shows `published`. `draft`, `booked`, `cancelled` and `invalidated` sessions would also be returned if they exist, and the mobile app has no styling for the last two.
+- Completed sessions are viewable, but `metric_values` stays `[]` until the session is published. The mobile detail screen shows a "results will appear once published" message in that case. If completed sessions should show their metrics, change `AssessmentSessionDetailSerializer.get_metric_values`.
