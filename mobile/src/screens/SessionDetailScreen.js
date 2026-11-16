@@ -54,7 +54,8 @@ export default function SessionDetailScreen({ route }) {
     );
   }
 
-  const isPublished = session.status === "published";
+  // Both published and completed sessions are viewable results.
+  const isViewable = session.status === "published" || session.status === "completed";
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
@@ -78,7 +79,7 @@ export default function SessionDetailScreen({ route }) {
           <MetaChip
             label="Status"
             value={session.status.toUpperCase()}
-            valueColor={isPublished ? "#22c55e" : "#6366f1"}
+            valueColor={session.status === "published" ? "#22c55e" : "#6366f1"}
           />
         </View>
       </GradientCard>
@@ -92,7 +93,7 @@ export default function SessionDetailScreen({ route }) {
       ) : null}
 
       {/* Metrics */}
-      {isPublished ? (
+      {isViewable ? (
         <View style={styles.metricsSection}>
           <View style={styles.metricsTitleRow}>
             <LinearGradient
@@ -106,7 +107,9 @@ export default function SessionDetailScreen({ route }) {
 
           <View style={styles.metricsCard}>
             {session.metric_values.length === 0 ? (
-              <Text style={styles.noMetrics}>No metrics captured.</Text>
+              <Text style={styles.noMetrics}>
+                {session.status === "completed" ? "Detailed results will appear here once they are published." : "No metrics captured."}
+              </Text>
             ) : (
               session.metric_values.map((m, i) => (
                 <MetricRow key={m.id} metric={m} index={i} />

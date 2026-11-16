@@ -7,7 +7,21 @@ from core.choices import AssessmentSessionStatusChoices, SourceTypeChoices, Valu
 from core.models import TimeStampedActiveModel
 
 
+class AssessmentSessionQuerySet(models.QuerySet):
+    def visible_to_athlete(self):
+        """The only sessions an athlete may see through the API (single source of truth)."""
+        return self.filter(
+            is_active=True,
+            status__in=[
+                AssessmentSessionStatusChoices.PUBLISHED,
+                AssessmentSessionStatusChoices.COMPLETED,
+            ],
+        )
+
+
 class AssessmentSession(TimeStampedActiveModel):
+    objects = AssessmentSessionQuerySet.as_manager()
+
     session_uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False, db_index=True)
     athlete = models.ForeignKey(
         "athletes.Athlete",

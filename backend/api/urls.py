@@ -1,4 +1,5 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from . import views
 
@@ -7,7 +8,7 @@ app_name = "api"
 urlpatterns = [
     # Auth
     path("auth/login/", views.LoginView.as_view(), name="login"),
-    path("auth/refresh/", views.RefreshView.as_view(), name="token_refresh"),
+    path("auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("auth/logout/", views.LogoutView.as_view(), name="logout"),
     path("auth/forgot-password/", views.ForgotPasswordView.as_view(), name="forgot_password"),
 
