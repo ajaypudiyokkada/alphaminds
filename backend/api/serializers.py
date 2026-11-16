@@ -112,8 +112,8 @@ class AssessmentSessionDetailSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(MetricValueSerializer(many=True))
     def get_metric_values(self, obj):
-        from core.choices import AssessmentSessionStatusChoices
-        if obj.status != AssessmentSessionStatusChoices.PUBLISHED:
+        from assessments.models import ATHLETE_VISIBLE_STATUSES
+        if obj.status not in ATHLETE_VISIBLE_STATUSES:
             return []
         qs = obj.metric_values.select_related("metric_definition").order_by("sequence_no", "id")
         return MetricValueSerializer(qs, many=True).data

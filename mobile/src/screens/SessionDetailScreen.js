@@ -107,9 +107,7 @@ export default function SessionDetailScreen({ route }) {
 
           <View style={styles.metricsCard}>
             {session.metric_values.length === 0 ? (
-              <Text style={styles.noMetrics}>
-                {session.status === "completed" ? "Detailed results will appear here once they are published." : "No metrics captured."}
-              </Text>
+              <Text style={styles.noMetrics}>No metrics captured.</Text>
             ) : (
               session.metric_values.map((m, i) => (
                 <MetricRow key={m.id} metric={m} index={i} />

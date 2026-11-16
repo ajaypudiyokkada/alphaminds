@@ -109,7 +109,7 @@ export default function DashboardScreen({ navigation }) {
 
       {!data?.recent_sessions?.length ? (
         <View style={styles.emptyCard}>
-          <Text style={styles.emptyText}>No published assessments yet.</Text>
+          <Text style={styles.emptyText}>No assessments yet.</Text>
         </View>
       ) : (
         data.recent_sessions.map((session) => (

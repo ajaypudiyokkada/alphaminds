@@ -71,13 +71,13 @@ Enrollment: `{ "id": int, "sport_name": string, "center_name": string, "start_da
 ### GET `/athlete/sessions/`
 200: `[SessionSummary]`, newest first.
 
-**Visibility rule (all athlete endpoints):** an athlete only ever sees sessions with `status` `published` or `completed` (and `is_active`). Sessions in any other status (`draft`, `booked`, `cancelled`, `invalidated`) are absent from the list and the dashboard, and their detail returns 404. The rule lives in one place: `AssessmentSession.objects.visible_to_athlete()`.
+**Visibility rule (all athlete endpoints):** an athlete only ever sees sessions with `status` `published` or `completed` (and `is_active`), both with full results (`metric_values`). Sessions in any other status (`draft`, `booked`, `cancelled`, `invalidated`) are absent from the list and the dashboard, and their detail returns 404. The rule lives in one place: `AssessmentSession.objects.visible_to_athlete()`.
 
 SessionSummary: `{ "id": int, "session_uuid": uuid, "assessed_on": datetime, "status": "completed" | "published", "protocol_name": string, "framework_name": string, "domain_name": string }`
 
 ### GET `/athlete/sessions/{session_id}/`
 200: SessionSummary plus `"sport_name": string`, `"notes": string`, `"metric_values": [Metric]`.
-`metric_values` is `[]` unless `status == "published"` (completed sessions are viewable but their metrics are only released once published).
+`metric_values` is the full metric list for both `published` and `completed` sessions (empty only if no metrics were captured).
 404: `{ "detail": "Session not found." }` (also for another athlete's session and for any status other than `published` / `completed`).
 
 Metric: `{ "id": int, "metric_name": string, "metric_label": string, "value_data_type": "integer" | "decimal" | "text" | "boolean" | "date" | "json", "numeric_value": number | null, "text_value": string, "boolean_value": bool | null, "date_value": date | null, "display_value": string, "units": string, "interpretation_direction": string, "is_higher_better": bool, "sequence_no": int, "notes": string }`
@@ -145,7 +145,3 @@ Status is OK (both sides agree), unused (backend sends it, mobile ignores it) or
 | leads | 201 detail | returned | not read | unused |
 | leads | 400 field errors | `{field: [msg]}` | read for inquiry_types, full_name, email, mobile_number, date_of_birth, parent_mobile, athlete_sport, academy_name, academy_city | OK |
 | leads | 400 errors for gender, pincode, city, state, message | possible | not displayed | unused (cannot occur with current UI values) |
-
-## Notes
-
-- Completed sessions are viewable, but `metric_values` stays `[]` until the session is published. The mobile detail screen shows a "results will appear once published" message in that case. If completed sessions should show their metrics, change `AssessmentSessionDetailSerializer.get_metric_values`.

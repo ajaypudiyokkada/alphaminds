@@ -7,16 +7,17 @@ from core.choices import AssessmentSessionStatusChoices, SourceTypeChoices, Valu
 from core.models import TimeStampedActiveModel
 
 
+# Statuses an athlete may see, with full results (single source of truth).
+ATHLETE_VISIBLE_STATUSES = [
+    AssessmentSessionStatusChoices.PUBLISHED,
+    AssessmentSessionStatusChoices.COMPLETED,
+]
+
+
 class AssessmentSessionQuerySet(models.QuerySet):
     def visible_to_athlete(self):
-        """The only sessions an athlete may see through the API (single source of truth)."""
-        return self.filter(
-            is_active=True,
-            status__in=[
-                AssessmentSessionStatusChoices.PUBLISHED,
-                AssessmentSessionStatusChoices.COMPLETED,
-            ],
-        )
+        """The only sessions an athlete may see through the API."""
+        return self.filter(is_active=True, status__in=ATHLETE_VISIBLE_STATUSES)
 
 
 class AssessmentSession(TimeStampedActiveModel):
