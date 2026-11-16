@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.pyc
 venv/
@@ -17,3 +17,7 @@ web-build/
 
 # Editor
 *.code-workspace
+
+# Local DB exports
+backup/
+staticfiles/
