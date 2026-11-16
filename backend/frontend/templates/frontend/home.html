@@ -1,0 +1,341 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+
+{% block title %}AlphaMinds | Home{% endblock %}
+
+{% block content %}
+<section class="relative overflow-hidden border-b border-am-border">
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[520px] h-[520px] rounded-full border border-am-border"></div>
+    <div class="absolute top-[-220px] left-1/2 -translate-x-1/2 w-[760px] h-[760px] rounded-full border border-am-border/60"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(6,200,212,0.10),transparent_30%)]"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-5 sm:px-6 md:px-8 py-10 md:py-16 lg:min-h-[88vh] grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-center overflow-hidden">
+    <div>
+      <div class="inline-block max-w-full px-4 py-2 rounded-full border border-am-border bg-am-cyan/10 text-am-cyan text-[11px] sm:text-xs tracking-[0.14em] sm:tracking-[0.2em] uppercase break-words">
+        The Art of Self-Steering Under Pressure
+      </div>
+
+      <h1 class="mt-6 text-4xl sm:text-5xl md:text-7xl font-bold leading-[0.95] tracking-tight break-words">
+        The <span class="text-am-cyan">Alpha Minds</span>
+      </h1>
+
+      <p class="mt-6 text-base sm:text-lg md:text-2xl text-zinc-200 max-w-3xl leading-relaxed">
+        A high-performance mental gym that blends <span class="text-am-cyan">Vedic wisdom</span> with <span class="text-am-cyan">modern neuroscience</span> to build a measurable psychological edge in athletes.
+      </p>
+
+      <p class="mt-4 text-zinc-400 max-w-3xl text-sm sm:text-base md:text-lg leading-relaxed">
+        We strengthen the athlete from the inside out—enhancing cognitive clarity, emotional control, adaptability, resilience, and eco social connectedness so peak performance can be sustained under pressure.
+      </p>
+
+      <div class="mt-10 max-w-2xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <a href="#program-ctas"
+             class="group px-6 py-4 rounded-2xl am-gradient-bg text-white font-bold text-center shadow-lg shadow-am-cyan/20 hover:scale-[1.01] hover:opacity-95 transition">
+            <div class="text-lg">Enroll in the Program</div>
+            <div class="text-xs font-medium mt-1 opacity-80">Explore the right starting point for your journey</div>
+          </a>
+
+          <a href="{% url 'login' %}?role=athlete"
+             class="group px-6 py-4 rounded-2xl border border-am-border text-am-cyan bg-am-cyan/5 text-center hover:bg-am-cyan/10 hover:border-am-cyan/40 transition">
+            <div class="text-lg font-semibold">Athlete Sign In</div>
+            <div class="text-xs mt-1 text-zinc-400">View your progress and performance journey</div>
+          </a>
+
+          <a href="{% url 'login' %}?role=staff"
+             class="group px-6 py-4 rounded-2xl border border-am-border text-am-cyan bg-am-cyan/5 text-center hover:bg-am-cyan/10 hover:border-am-cyan/40 transition sm:col-span-2 lg:col-span-1">
+            <div class="text-lg font-semibold">Staff Sign In</div>
+            <div class="text-xs mt-1 text-zinc-400">Capture assessments and manage athlete records</div>
+          </a>
+        </div>
+
+        <p class="mt-3 text-sm text-zinc-500">
+          New to Alpha Minds? Start with program enrollment. Already onboarded? Use your portal access.
+        </p>
+      </div>
+    </div>
+
+    <div class="rounded-3xl border border-am-border bg-am-surface p-4 sm:p-5 md:p-6 shadow-[0_20px_60px_rgba(6,200,212,0.08)] backdrop-blur-sm">
+      <div class="text-center mb-6">
+        <img src="{% static 'frontend/img/alphaminds_logo.png' %}" alt="AlphaMinds Logo" class="mx-auto w-full max-w-[320px] md:max-w-sm drop-shadow-[0_0_28px_rgba(6,200,212,0.18)]">
+      </div>
+
+      <div class="flex justify-between items-center gap-4 mb-6">
+        <div>
+          <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Core Framework</div>
+          <h3 class="mt-2 text-2xl font-semibold text-white">Inside-Out Performance</h3>
+        </div>
+        <div class="w-14 h-14 rounded-full grid place-items-center border border-am-border bg-am-cyan/10 text-am-cyan text-2xl">
+          I
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="rounded-2xl border border-am-border bg-am-alt p-4 text-center text-zinc-100">IQ • Cognitive Clarity</div>
+        <div class="rounded-2xl border border-am-border bg-am-alt p-4 text-center text-zinc-100">AQ • Adaptability</div>
+        <div class="rounded-2xl border border-am-border bg-am-alt p-4 text-center text-zinc-100">EQ • Emotional Control</div>
+        <div class="rounded-2xl border border-am-border bg-am-alt p-4 text-center text-zinc-100">SQ • Social Connectedness</div>
+      </div>
+
+      <div class="mt-5 rounded-2xl border border-am-border bg-[linear-gradient(135deg,rgba(6,200,212,0.10),rgba(255,255,255,0.02))] p-5">
+        <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Outcome</div>
+        <p class="mt-3 text-zinc-200 leading-relaxed">
+          Athletes who can think clearly, regulate emotion, adapt quickly, and perform consistently when it matters most.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 md:py-20">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 md:px-8 grid lg:grid-cols-[0.88fr_1.12fr] gap-10 items-start">
+    <div>
+      <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">What makes Alpha Minds different</div>
+      <h2 class="mt-3 text-4xl md:text-6xl font-bold leading-tight tracking-tight break-words">
+        Ancient insight. Modern science. Real athletic application.
+      </h2>
+      <p class="mt-5 text-zinc-400 text-sm sm:text-base md:text-lg max-w-2xl leading-relaxed">
+        Alpha Minds focuses on the natural traits and strengths of each athlete through psychometric assessment, performance training, regulated breathing, visualization, neuroplasticity-driven challenges, and real-world human experiences.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-5">
+      <div class="rounded-3xl border border-am-border bg-am-surface p-7">
+        <div class="w-16 h-1.5 rounded-full am-gradient-bg mb-5"></div>
+        <div class="text-lg text-zinc-100">Psychometric assessment-led personalization</div>
+      </div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-7">
+        <div class="w-16 h-1.5 rounded-full am-gradient-bg mb-5"></div>
+        <div class="text-lg text-zinc-100">Cognitive vision and reaction-based mental training</div>
+      </div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-7">
+        <div class="w-16 h-1.5 rounded-full am-gradient-bg mb-5"></div>
+        <div class="text-lg text-zinc-100">Breathwork, meditation, and imagery for emotional control</div>
+      </div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-7">
+        <div class="w-16 h-1.5 rounded-full am-gradient-bg mb-5"></div>
+        <div class="text-lg text-zinc-100">Resilience through adaptability and neuroplasticity drills</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 md:py-20 border-y border-am-border bg-am-bg/50">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 md:px-8">
+    <div class="max-w-3xl">
+      <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">The Alpha Framework</div>
+      <h2 class="mt-3 text-4xl md:text-6xl font-bold leading-tight tracking-tight break-words">
+        Five pillars that shape the complete athlete
+      </h2>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6 mt-10">
+      <article class="rounded-3xl border border-am-border bg-am-surface p-7 hover:-translate-y-1 transition">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h3 class="text-2xl font-semibold">Personality Assessment &amp; Development</h3>
+            <div class="mt-2 text-xs uppercase tracking-[0.16em] text-am-cyan">Know the athlete before shaping the athlete</div>
+          </div>
+          <span class="w-3.5 h-3.5 rounded-full am-gradient-bg mt-2"></span>
+        </div>
+        <ul class="mt-6 space-y-3 text-zinc-300">
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Mental Toughness Assessment</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>MBTI-based personality insight</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>SMART goal framework</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Short- and long-term performance goals</span></li>
+        </ul>
+      </article>
+
+      <article class="rounded-3xl border border-am-border bg-am-surface p-7 hover:-translate-y-1 transition">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h3 class="text-2xl font-semibold">Cognitive Performance</h3>
+            <div class="mt-2 text-xs uppercase tracking-[0.16em] text-am-cyan">Sharper thinking. Faster reactions. Better decisions.</div>
+          </div>
+          <span class="w-3.5 h-3.5 rounded-full am-gradient-bg mt-2"></span>
+        </div>
+        <ul class="mt-6 space-y-3 text-zinc-300">
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Cognitive vision assessment &amp; training</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Cognitive HIIT</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Focus and attention training</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Working memory, reaction time, planning &amp; predictability</span></li>
+        </ul>
+      </article>
+
+      <article class="rounded-3xl border border-am-border bg-am-surface p-7 hover:-translate-y-1 transition">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h3 class="text-2xl font-semibold">Emotional Regulation</h3>
+            <div class="mt-2 text-xs uppercase tracking-[0.16em] text-am-cyan">Calm under pressure is a trainable skill</div>
+          </div>
+          <span class="w-3.5 h-3.5 rounded-full am-gradient-bg mt-2"></span>
+        </div>
+        <ul class="mt-6 space-y-3 text-zinc-300">
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Individualized breathing protocols</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Heart-specific breathing</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Guided meditation</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Visualization and mental imagery</span></li>
+        </ul>
+      </article>
+
+      <article class="rounded-3xl border border-am-border bg-am-surface p-7 hover:-translate-y-1 transition">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h3 class="text-2xl font-semibold">Adaptability &amp; Resilience</h3>
+            <div class="mt-2 text-xs uppercase tracking-[0.16em] text-am-cyan">Train the brain to adjust, recover, and respond</div>
+          </div>
+          <span class="w-3.5 h-3.5 rounded-full am-gradient-bg mt-2"></span>
+        </div>
+        <ul class="mt-6 space-y-3 text-zinc-300">
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Neuroplasticity-driven activities</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Intuition versus logic training</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Right- versus left-brain stimulation</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Physical balance, new skills, and random challenges</span></li>
+        </ul>
+      </article>
+
+      <article class="rounded-3xl border border-am-border bg-am-surface p-7 hover:-translate-y-1 transition lg:col-span-2">
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h3 class="text-2xl font-semibold">Eco Social Connectedness</h3>
+            <div class="mt-2 text-xs uppercase tracking-[0.16em] text-am-cyan">Great athletes are deeply connected humans</div>
+          </div>
+          <span class="w-3.5 h-3.5 rounded-full am-gradient-bg mt-2"></span>
+        </div>
+        <ul class="mt-6 grid md:grid-cols-2 gap-x-8 gap-y-3 text-zinc-300">
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Real-life scenario training</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Society engagement</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Nature immersion: trekking and camping</span></li>
+          <li class="flex gap-3"><span class="mt-2 w-2 h-2 rounded-full bg-am-cyan"></span><span>Friendship, belonging, and social confidence</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="py-14 md:py-18">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 md:px-8 grid lg:grid-cols-2 gap-9 items-center">
+    <div class="rounded-3xl border border-am-border bg-[linear-gradient(135deg,rgba(6,200,212,0.09),rgba(255,255,255,0.02))] p-8">
+      <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">8 Roles in 1</div>
+      <h2 class="mt-3 text-4xl md:text-5xl font-bold leading-tight tracking-tight break-words">
+        A multidisciplinary mental performance system
+      </h2>
+      <p class="mt-5 text-zinc-400 text-sm sm:text-base md:text-lg leading-relaxed">
+        Alpha Minds is not one-dimensional support. It is a performance ecosystem that touches psychology, cognition, breath, visualization, resilience, and human development in one integrated model.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-5">
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Sports Psychologist</div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Cognitive Vision Trainer</div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Breath Coach</div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Guided Meditation &amp; Visualization Coach</div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Mental Toughness Coach</div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Personality Development Coach</div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Neuroscience Specialist</div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6 text-center">Performance Mindset Architect</div>
+    </div>
+  </div>
+</section>
+
+<section id="program-ctas" class="py-16 md:py-20 scroll-mt-24">
+  <div class="max-w-7xl mx-auto px-5 sm:px-6 md:px-8">
+    <div class="rounded-3xl border border-am-border bg-am-surface p-8 md:p-10">
+      <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-center">
+        <div>
+          <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">For ambitious athletes and academies</div>
+          <h2 class="mt-3 text-4xl md:text-5xl font-bold leading-tight tracking-tight break-words">
+            Build the inner edge that changes outer performance
+          </h2>
+          <p class="mt-5 text-zinc-400 text-sm sm:text-base md:text-lg leading-relaxed">
+            Whether the goal is composure in competition, sharper decision-making, stronger recovery from setbacks, or deeper self-mastery, Alpha Minds helps athletes train the mind with the same seriousness as the body.
+          </p>
+        </div>
+
+        <div class="rounded-3xl border border-am-border bg-am-alt/70 p-6">
+          <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Suggested calls to action</div>
+          <div class="grid gap-3 mt-5">
+            <a href="{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_mental_toughness"
+               hx-get="{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_mental_toughness"
+               hx-target="#contact-modal-wrapper"
+               hx-swap="innerHTML"
+               hx-push-url="false"
+               onclick="return openContactModal(event, '{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_mental_toughness');"
+               class="rounded-2xl border border-am-border bg-am-surface px-4 py-4 text-zinc-100 hover:border-am-cyan/30 hover:bg-am-alt transition cursor-pointer">
+              Schedule a Personality &amp; Mental Toughness Assessment
+            </a>
+
+            <a href="{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_cognitive_vision"
+               hx-get="{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_cognitive_vision"
+               hx-target="#contact-modal-wrapper"
+               hx-swap="innerHTML"
+               hx-push-url="false"
+               onclick="return openContactModal(event, '{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_cognitive_vision');"
+               class="rounded-2xl border border-am-border bg-am-surface px-4 py-4 text-zinc-100 hover:border-am-cyan/30 hover:bg-am-alt transition cursor-pointer">
+              Book a Cognitive Vision Evaluation
+            </a>
+
+            <a href="{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_emotional_regulation"
+               hx-get="{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_emotional_regulation"
+               hx-target="#contact-modal-wrapper"
+               hx-swap="innerHTML"
+               hx-push-url="false"
+               onclick="return openContactModal(event, '{% url 'frontend:contact_form_partial' %}?inquiry_type=athlete_emotional_regulation');"
+               class="rounded-2xl border border-am-border bg-am-surface px-4 py-4 text-zinc-100 hover:border-am-cyan/30 hover:bg-am-alt transition cursor-pointer">
+              Start an Emotional Regulation Program
+            </a>
+
+            <a href="{% url 'frontend:contact_form_partial' %}?inquiry_type=academy_partnership"
+               hx-get="{% url 'frontend:contact_form_partial' %}?inquiry_type=academy_partnership"
+               hx-target="#contact-modal-wrapper"
+               hx-swap="innerHTML"
+               hx-push-url="false"
+               onclick="return openContactModal(event, '{% url 'frontend:contact_form_partial' %}?inquiry_type=academy_partnership');"
+               class="rounded-2xl border border-am-border bg-am-surface px-4 py-4 text-zinc-100 hover:border-am-cyan/30 hover:bg-am-alt transition cursor-pointer">
+              Explore Alpha Minds for your academy
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center text-sm text-zinc-500 pt-8">
+      The Alpha Minds • Premium landing page
+    </div>
+  </div>
+</section>
+
+<div id="contact-modal-wrapper"></div>
+
+<script>
+  async function openContactModal(event, url) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (window.htmx) {
+      return true;
+    }
+
+    const wrapper = document.getElementById("contact-modal-wrapper");
+    if (!wrapper) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      });
+      const html = await response.text();
+      wrapper.innerHTML = html;
+    } catch (error) {
+      console.error("Contact modal load failed:", error);
+    }
+
+    return false;
+  }
+</script>
+{% endblock %}

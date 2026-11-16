@@ -1,0 +1,18 @@
+<div class="text-center py-8">
+  <div class="w-16 h-16 mx-auto rounded-full am-gradient-bg/10 border border-am-border flex items-center justify-center text-am-cyan text-2xl">
+    ✓
+  </div>
+  <h4 class="mt-5 text-2xl font-semibold text-white">Enquiry Submitted</h4>
+  <p class="mt-3 text-zinc-400 max-w-lg mx-auto">
+    {{ success_message }}
+  </p>
+  <div class="mt-6">
+    <button type="button"
+            class="px-5 py-3 rounded-2xl am-gradient-bg text-white font-bold"
+            hx-get="{% url 'frontend:contact_close' %}"
+            hx-target="#contact-modal-wrapper"
+            hx-swap="innerHTML">
+      Close
+    </button>
+  </div>
+</div>

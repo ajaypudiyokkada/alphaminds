@@ -1,0 +1,137 @@
+{% extends "frontend/base.html" %}
+{% block title %}Staff Dashboard | AlphaMinds{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-am-bg text-white">
+  <div class="mx-auto max-w-7xl px-4 py-6">
+    <div class="flex flex-col gap-4 rounded-3xl border border-am-border bg-am-surface p-6 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Staff Dashboard</div>
+        <h1 class="mt-2 text-3xl font-semibold">AlphaMinds Operations</h1>
+        <p class="mt-2 text-sm text-zinc-400">
+          Manage athletes, assessments, capture, and publishing from one place.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <a href="{% url 'frontend:staff_athlete_create' %}"
+           class="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-200">
+          Create Athlete
+        </a>
+        <a href="{% url 'frontend:assessment_create' %}"
+           class="rounded-xl am-gradient-bg px-4 py-3 text-sm font-semibold text-white transition hover:bg-am-cyan">
+          Book Assessment
+        </a>
+       
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="rounded-3xl border border-blue-700/20 bg-am-surface p-5">
+        <div class="text-sm uppercase tracking-wide text-zinc-400">Athletes</div>
+        <div class="mt-3 text-4xl font-bold">{{ athlete_count }}</div>
+      </div>
+      <div class="rounded-3xl border border-am-border bg-am-surface p-5">
+        <div class="text-sm uppercase tracking-wide text-zinc-400">Booked</div>
+        <div class="mt-3 text-4xl font-bold">{{ booked_sessions }}</div>
+      </div>
+      <div class="rounded-3xl border border-orange-700/20 bg-am-surface p-5">
+        <div class="text-sm uppercase tracking-wide text-zinc-400">Draft</div>
+        <div class="mt-3 text-4xl font-bold">{{ draft_sessions }}</div>
+      </div>
+      <div class="rounded-3xl border border-green-700/20 bg-am-surface p-5">
+        <div class="text-sm uppercase tracking-wide text-zinc-400">Published</div>
+        <div class="mt-3 text-4xl font-bold">{{ published_sessions }}</div>
+      </div>
+    </div>
+
+    <div class="mt-8 grid gap-6 xl:grid-cols-5">
+      <div class="xl:col-span-3 rounded-3xl border border-am-border bg-am-surface p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Assessments</div>
+            <h2 class="mt-2 text-2xl font-semibold">Recent Sessions</h2>
+          </div>
+          <a href="{% url 'frontend:assessment_create' %}" class="text-sm text-am-cyan hover:text-cyan-200">
+            Book new
+          </a>
+        </div>
+
+        <div class="mt-5 space-y-4">
+          {% for session in recent_sessions %}
+            <div class="rounded-2xl border border-am-border bg-am-alt/70 p-4">
+              <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <div class="text-sm text-zinc-400">{{ session.assessed_on|date:"d M Y, h:i A" }}</div>
+                  <div class="mt-1 text-lg font-semibold text-white">{{ session.athlete.full_name }}</div>
+                  <div class="text-sm text-zinc-300">{{ session.protocol.name }}</div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="rounded-full border border-am-border px-3 py-1 text-xs uppercase tracking-wide text-zinc-200">
+                    {{ session.status }}
+                  </span>
+
+                  {% if session.status == "booked" %}
+                    <a href="{% url 'frontend:assessment_capture' session.id %}"
+                       class="rounded-lg am-gradient-bg px-3 py-2 text-sm font-medium text-white hover:bg-am-cyan">
+                      Capture
+                    </a>
+                  {% elif session.status == "completed" %}
+                    <a href="{% url 'frontend:assessment_publish' session.id %}"
+                       class="rounded-lg bg-green-500 px-3 py-2 text-sm font-medium text-white hover:bg-green-400">
+                      Publish
+                    </a>
+                    <a href="{% url 'frontend:assessment_capture' session.id %}"
+                       class="rounded-lg border border-am-border px-3 py-2 text-sm text-zinc-200 hover:bg-am-alt">
+                      Edit
+                    </a>
+                  {% else %}
+                    <a href="{% url 'frontend:staff_athlete_detail' session.athlete.id %}"
+                       class="rounded-lg border border-am-border px-3 py-2 text-sm text-zinc-200 hover:bg-am-alt">
+                      View Athlete
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <div class="rounded-2xl border border-dashed border-am-border p-5 text-sm text-zinc-400">
+              No assessment sessions yet.
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="xl:col-span-2 rounded-3xl border border-am-border bg-am-surface p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Athletes</div>
+            <h2 class="mt-2 text-2xl font-semibold">Quick Access</h2>
+          </div>
+          <a href="{% url 'frontend:staff_athlete_create' %}" class="text-sm text-am-cyan hover:text-cyan-200">
+            Add athlete
+          </a>
+        </div>
+
+        <div class="mt-5 space-y-3">
+          {% for athlete in athletes %}
+            <a href="{% url 'frontend:staff_athlete_detail' athlete.id %}"
+               class="flex items-center justify-between rounded-2xl border border-am-border bg-am-alt/70 px-4 py-3 transition hover:border-am-cyan/30 hover:bg-am-alt">
+              <div>
+                <div class="font-medium text-white">{{ athlete.full_name }}</div>
+                <div class="text-sm text-zinc-400">{{ athlete.email|default:athlete.phone|default:"No contact details" }}</div>
+              </div>
+              <div class="text-sm text-am-cyan">Open</div>
+            </a>
+          {% empty %}
+            <div class="rounded-2xl border border-dashed border-am-border p-5 text-sm text-zinc-400">
+              No athletes found for this center.
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

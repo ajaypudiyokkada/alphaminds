@@ -1,0 +1,96 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Book Assessment | AlphaMinds{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-am-bg text-white">
+  <div class="mx-auto max-w-4xl px-4 py-6">
+    <a href="{% url 'frontend:staff_home' %}" class="text-sm text-am-cyan hover:text-cyan-200">
+      ← Back to staff dashboard
+    </a>
+
+    <div class="mt-4 rounded-3xl border border-am-border bg-am-surface p-6">
+      <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Assessment Workflow</div>
+      <h1 class="mt-2 text-3xl font-semibold">Book Assessment Session</h1>
+      <p class="mt-2 text-sm text-zinc-400">
+        This creates the session shell. Metrics are captured in the next step.
+      </p>
+
+      <form method="post" class="mt-8 space-y-6">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label class="mb-2 block text-sm text-zinc-300">{{ form.athlete.label }}</label>
+            <select
+              name="{{ form.athlete.html_name }}"
+              id="{{ form.athlete.id_for_label }}"
+              class="{{ form.athlete.field.widget.attrs.class }}"
+              hx-get="{% url 'frontend:athlete_enrollment_partial' %}"
+              hx-trigger="change"
+              hx-target="#assessment-enrollment-fields-wrapper"
+              hx-include="[name='athlete']"
+            >
+              <option value="">---------</option>
+              {% for value, label in form.athlete.field.choices %}
+                <option value="{{ value }}" {% if form.athlete.value|stringformat:'s' == value|stringformat:'s' %}selected{% endif %}>
+                  {{ label }}
+                </option>
+              {% endfor %}
+            </select>
+            {% if form.athlete.help_text %}
+              <div class="mt-2 text-xs text-zinc-500">{{ form.athlete.help_text }}</div>
+            {% endif %}
+            {% if form.athlete.errors %}
+              <div class="mt-2 text-sm text-red-300">{{ form.athlete.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div id="assessment-protocol-fields-wrapper">
+            {% include "frontend/partials/assessment_protocol_fields.html" with domains=form.fields.domain.queryset frameworks=form.fields.framework.queryset protocols=form.fields.protocol.queryset selected_domain=selected_domain selected_framework=selected_framework selected_protocol_id=selected_protocol_id %}
+          </div>
+        </div>
+
+        <div id="assessment-enrollment-fields-wrapper" class="mt-4">
+          {% include "frontend/partials/assessment_enrollment_fields.html" with enrollments=form.fields.enrollment.queryset selected_enrollment=selected_enrollment %}
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label class="mb-2 block text-sm text-zinc-300">{{ form.assessed_on.label }}</label>
+            {{ form.assessed_on }}
+            {% if form.assessed_on.errors %}
+              <div class="mt-2 text-sm text-red-300">{{ form.assessed_on.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-2 block text-sm text-zinc-300">{{ form.notes.label }}</label>
+          {{ form.notes }}
+          {% if form.notes.errors %}
+            <div class="mt-2 text-sm text-red-300">{{ form.notes.errors }}</div>
+          {% endif %}
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <button type="submit"
+                  class="rounded-xl am-gradient-bg px-5 py-3 font-semibold text-white transition hover:bg-am-cyan">
+            Book Session
+          </button>
+          <a href="{% url 'frontend:staff_home' %}"
+             class="rounded-xl border border-am-border px-5 py-3 text-zinc-200 transition hover:bg-am-alt">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

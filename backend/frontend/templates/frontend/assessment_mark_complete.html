@@ -1,0 +1,47 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Mark Assessment Complete | AlphaMinds{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-am-bg text-white">
+  <div class="mx-auto max-w-3xl px-4 py-8">
+    <a href="{% url 'frontend:staff_athlete_detail' session.athlete.id %}" class="text-sm text-am-cyan hover:text-cyan-200">
+      ← Back to athlete
+    </a>
+
+    <div class="mt-4 rounded-3xl border border-am-border bg-am-surface p-6">
+      <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Mark Complete</div>
+      <h1 class="mt-2 text-3xl font-semibold">{{ session.protocol.name }}</h1>
+      <p class="mt-3 text-sm text-zinc-300">
+        Mark this assessment as completed to proceed with metric capture.
+      </p>
+
+      <div class="mt-6 rounded-2xl border border-am-border bg-am-alt/60 p-4 text-sm text-zinc-300">
+        <div><span class="text-zinc-500">Athlete:</span> {{ session.athlete.full_name }}</div>
+        <div class="mt-2"><span class="text-zinc-500">Assessment Time:</span> {{ session.assessed_on|date:"d M Y, h:i A" }}</div>
+        <div class="mt-2"><span class="text-zinc-500">Current Status:</span> {{ session.status }}</div>
+      </div>
+
+      <form method="post" class="mt-8 space-y-4">
+        {% csrf_token %}
+        <div>
+          <label for="notes" class="block text-sm text-zinc-400 mb-1">Notes (optional)</label>
+          <textarea id="notes" name="notes" rows="3"
+                    class="w-full rounded-xl border border-am-border bg-am-alt px-4 py-3 text-sm text-zinc-100 placeholder-am-dim focus:border-am-cyan focus:outline-none"
+                    placeholder="Add any session notes…"></textarea>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <button type="submit"
+                  class="rounded-xl am-gradient-bg px-5 py-3 font-semibold text-white transition hover:bg-am-cyan">
+            Mark as Complete
+          </button>
+          <a href="{% url 'frontend:staff_athlete_detail' session.athlete.id %}"
+             class="rounded-xl border border-am-border px-5 py-3 text-zinc-200 transition hover:bg-am-alt">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Publish Assessment | AlphaMinds{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-am-bg text-white">
+  <div class="mx-auto max-w-3xl px-4 py-8">
+    <a href="{% url 'frontend:staff_athlete_detail' session.athlete.id %}" class="text-sm text-am-cyan hover:text-cyan-200">
+      ← Back to athlete
+    </a>
+
+    <div class="mt-4 rounded-3xl border border-green-700/20 bg-am-surface p-6">
+      <div class="text-xs uppercase tracking-[0.18em] text-green-300">Publish Assessment</div>
+      <h1 class="mt-2 text-3xl font-semibold">{{ session.protocol.name }}</h1>
+      <p class="mt-3 text-sm text-zinc-300">
+        Once published, this assessment becomes visible on the athlete dashboard.
+      </p>
+
+      <div class="mt-6 rounded-2xl border border-am-border bg-am-alt/60 p-4 text-sm text-zinc-300">
+        <div><span class="text-zinc-500">Athlete:</span> {{ session.athlete.full_name }}</div>
+        <div class="mt-2"><span class="text-zinc-500">Assessment Time:</span> {{ session.assessed_on|date:"d M Y, h:i A" }}</div>
+        <div class="mt-2"><span class="text-zinc-500">Current Status:</span> {{ session.status }}</div>
+      </div>
+
+      <form method="post" class="mt-8 flex flex-wrap gap-3">
+        {% csrf_token %}
+        <button type="submit"
+                class="rounded-xl bg-green-500 px-5 py-3 font-semibold text-white transition hover:bg-green-400">
+          Publish Now
+        </button>
+        <a href="{% url 'frontend:assessment_capture' session.id %}"
+           class="rounded-xl border border-am-border px-5 py-3 text-zinc-200 transition hover:bg-am-alt">
+          Go Back
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

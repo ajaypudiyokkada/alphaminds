@@ -1,0 +1,57 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Capture Metrics | AlphaMinds{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-am-bg text-white">
+  <div class="mx-auto max-w-5xl px-4 py-6">
+    <a href="{% url 'frontend:staff_athlete_detail' session.athlete.id %}" class="text-sm text-am-cyan hover:text-cyan-200">
+      ← Back to athlete
+    </a>
+
+    <div class="mt-4 rounded-3xl border border-am-border bg-am-surface p-6">
+      <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Assessment Capture</div>
+      <h1 class="mt-2 text-3xl font-semibold">{{ session.protocol.name }}</h1>
+      <div class="mt-2 text-sm text-zinc-400">
+        {{ session.athlete.full_name }} • {{ session.assessed_on|date:"d M Y, h:i A" }}
+      </div>
+    </div>
+
+    <form method="post" class="mt-6 rounded-3xl border border-am-border bg-am-surface p-6">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <div class="grid gap-5 md:grid-cols-2">
+        {% for field in form %}
+          <div class="rounded-2xl border border-am-border bg-am-alt/60 p-4">
+            <label class="mb-2 block text-sm font-medium text-zinc-200">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+              <div class="mt-2 text-xs text-zinc-500">{{ field.help_text }}</div>
+            {% endif %}
+            {% if field.errors %}
+              <div class="mt-2 text-sm text-red-300">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button type="submit"
+                class="rounded-xl am-gradient-bg px-5 py-3 font-semibold text-white transition hover:bg-am-cyan">
+          Save Metrics
+        </button>
+        <a href="{% url 'frontend:staff_athlete_detail' session.athlete.id %}"
+           class="rounded-xl border border-am-border px-5 py-3 text-zinc-200 transition hover:bg-am-alt">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

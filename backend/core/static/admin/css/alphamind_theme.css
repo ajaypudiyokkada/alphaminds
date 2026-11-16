@@ -1,0 +1,447 @@
+/*
+ * AlphaMinds Admin Theme
+ * Matches the dark cyan→violet palette from AlphamindsApp/src/theme.js
+ *
+ * Color tokens:
+ *   bg:        #0c0d11   (page background)
+ *   surface:   #13141c   (card/module background)
+ *   surfaceAlt:#1a1b25   (elevated surface)
+ *   border:    #1e2030   (subtle borders)
+ *   gradStart: #06c8d4   (cyan accent)
+ *   gradMid:   #6366f1   (indigo)
+ *   gradEnd:   #8b2fc9   (violet)
+ *   white:     #ffffff
+ *   textMuted: #8a8b9e
+ *   textDim:   #4a4b5e
+ *   green:     #22c55e
+ *   red:       #ef4444
+ *   yellow:    #facc15
+ */
+
+:root {
+  /* ── Django admin CSS variables ── */
+  --primary:             #06c8d4;
+  --accent:              #6366f1;
+  --secondary:           #8b2fc9;
+  --primary-fg:          #ffffff;
+
+  --body-fg:             #e0e1ec;
+  --body-bg:             #0c0d11;
+  --body-quiet-color:    #8a8b9e;
+  --body-loud-color:     #ffffff;
+
+  --header-color:        #ffffff;
+  --header-branding-color: #ffffff;
+  --header-bg:           #0c0d11;
+  --header-link-color:   #06c8d4;
+
+  --breadcrumbs-fg:      #8a8b9e;
+  --breadcrumbs-link-fg: #06c8d4;
+  --breadcrumbs-bg:      #13141c;
+
+  --link-fg:             #06c8d4;
+  --link-hover-color:    #38d9e5;
+  --link-selected-fg:    #8b2fc9;
+
+  --hairline-color:      #1e2030;
+  --border-color:        #2a2b3d;
+
+  --error-fg:            #ef4444;
+  --message-success-bg:  #052e16;
+  --message-warning-bg:  #422006;
+  --message-error-bg:    #2a0a0a;
+
+  --darkened-bg:         #13141c;
+  --selected-bg:         #1a1b25;
+  --selected-row:        #1a1b25;
+
+  --button-fg:           #ffffff;
+  --button-bg:           #06c8d4;
+  --button-hover-bg:     #05b0bb;
+  --default-button-bg:   #6366f1;
+  --default-button-hover-bg: #4f52d9;
+  --close-button-bg:     #4a4b5e;
+  --close-button-hover-bg: #8a8b9e;
+  --delete-button-bg:    #ef4444;
+  --delete-button-hover-bg: #dc2626;
+
+  --object-tools-fg:     #ffffff;
+  --object-tools-bg:     #6366f1;
+  --object-tools-hover-bg: #4f52d9;
+
+  --font-family-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+}
+
+/* ── Header gradient bar ── */
+#header {
+  background: linear-gradient(135deg, #0c0d11 0%, #13141c 100%);
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #06c8d4, #6366f1, #8b2fc9) 1;
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ── Navigation ── */
+#header a:link, #header a:visited {
+  color: #06c8d4;
+}
+#header a:hover {
+  color: #38d9e5;
+}
+
+/* ── Body & content ── */
+body {
+  background: #0c0d11;
+  color: #e0e1ec;
+}
+
+#content {
+  background: transparent;
+}
+
+/* ── Modules (cards) ── */
+.module {
+  background: #13141c;
+  border: 1px solid #1e2030;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.module h2, .module caption {
+  background: #1a1b25;
+  color: #ffffff;
+  font-weight: 600;
+  border-bottom: 1px solid #1e2030;
+  padding: 10px 14px;
+}
+
+/* ── Tables ── */
+#result_list table,
+#change-history table,
+.module table {
+  background: #13141c;
+}
+
+#result_list table thead th {
+  background: #1a1b25;
+  color: #8a8b9e;
+  border-bottom: 1px solid #1e2030;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+#result_list table tbody tr {
+  border-bottom: 1px solid #1e2030;
+}
+
+#result_list table tbody tr:nth-child(odd) {
+  background: #13141c;
+}
+
+#result_list table tbody tr:nth-child(even) {
+  background: #0f1017;
+}
+
+#result_list table tbody tr:hover {
+  background: #1a1b25;
+}
+
+#result_list table tbody td,
+#result_list table tbody th {
+  color: #e0e1ec;
+  border-bottom: 1px solid #1e2030;
+}
+
+#result_list table tbody th a {
+  color: #06c8d4;
+  font-weight: 600;
+}
+
+/* ── Sidebar / Filters ── */
+#changelist-filter {
+  background: #13141c;
+  border: 1px solid #1e2030;
+  border-radius: 8px;
+}
+
+#changelist-filter h2 {
+  background: #1a1b25;
+  color: #ffffff;
+  border-bottom: 1px solid #1e2030;
+}
+
+#changelist-filter h3 {
+  color: #8a8b9e;
+  border-bottom: 1px solid #1e2030;
+}
+
+#changelist-filter li {
+  border-bottom: 1px solid #1e203044;
+}
+
+#changelist-filter li a {
+  color: #8a8b9e;
+}
+
+#changelist-filter li a:hover,
+#changelist-filter li a:focus {
+  color: #06c8d4;
+}
+
+#changelist-filter li.selected a {
+  color: #06c8d4;
+  font-weight: 600;
+}
+
+/* ── Forms & Inputs ── */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+textarea,
+select,
+.vTextField,
+.vDateField,
+.vTimeField,
+.vURLField {
+  background: #1a1b25;
+  color: #e0e1ec;
+  border: 1px solid #2a2b3d;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #06c8d4;
+  outline: none;
+  box-shadow: 0 0 0 2px #06c8d422;
+}
+
+/* ── Fieldsets ── */
+fieldset {
+  background: #13141c;
+  border: 1px solid #1e2030;
+  border-radius: 8px;
+}
+
+fieldset h2 {
+  color: #06c8d4;
+  font-weight: 600;
+}
+
+fieldset .description {
+  color: #8a8b9e;
+}
+
+.form-row {
+  border-bottom: 1px solid #1e203066;
+}
+
+/* ── Inline groups ── */
+.inline-group .tabular td,
+.inline-group .tabular th {
+  background: transparent;
+  border-bottom: 1px solid #1e2030;
+  color: #e0e1ec;
+}
+
+.inline-group h2 {
+  background: #1a1b25;
+  color: #ffffff;
+}
+
+.inline-related {
+  border: 1px solid #1e2030;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+/* ── Buttons ── */
+input[type="submit"],
+button,
+.submit-row input,
+.button {
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.submit-row {
+  background: #13141c;
+  border-top: 2px solid transparent;
+  border-image: linear-gradient(90deg, #06c8d4, #6366f1, #8b2fc9) 1;
+}
+
+/* Default button (save) → indigo */
+.submit-row input.default {
+  background: #6366f1;
+  color: #ffffff;
+  border: none;
+}
+.submit-row input.default:hover {
+  background: #4f52d9;
+}
+
+/* Delete → red */
+.deletelink,
+.submit-row .deletelink {
+  background: #ef4444;
+  color: #ffffff !important;
+}
+.deletelink:hover,
+.submit-row .deletelink:hover {
+  background: #dc2626;
+}
+
+/* ── Object tools (action buttons top-right) ── */
+.object-tools a {
+  background: #6366f1;
+  color: #ffffff;
+  border-radius: 6px;
+}
+.object-tools a:hover {
+  background: #4f52d9;
+}
+
+/* ── Action bar ── */
+.actions {
+  background: #13141c;
+  border: 1px solid #1e2030;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.actions select {
+  background: #1a1b25;
+  color: #e0e1ec;
+  border: 1px solid #2a2b3d;
+}
+
+/* ── Breadcrumbs ── */
+div.breadcrumbs {
+  background: #13141c;
+  border-bottom: 1px solid #1e2030;
+  color: #8a8b9e;
+}
+
+div.breadcrumbs a {
+  color: #06c8d4;
+}
+
+/* ── Messages ── */
+.messagelist li.success {
+  background: #052e16;
+  color: #22c55e;
+  border-left: 4px solid #22c55e;
+}
+
+.messagelist li.warning {
+  background: #422006;
+  color: #facc15;
+  border-left: 4px solid #facc15;
+}
+
+.messagelist li.error {
+  background: #2a0a0a;
+  color: #ef4444;
+  border-left: 4px solid #ef4444;
+}
+
+.messagelist li {
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+/* ── Dashboard / App list ── */
+.app-label,
+table caption {
+  color: #ffffff;
+}
+
+.dashboard #content-main .module table th a {
+  color: #06c8d4;
+}
+
+/* ── Calendar & date widgets ── */
+.calendarbox {
+  background: #13141c;
+  border: 1px solid #1e2030;
+}
+
+.calendar td,
+.calendar th {
+  background: #13141c;
+  color: #e0e1ec;
+}
+
+.calendar td.today {
+  background: #06c8d422;
+  color: #06c8d4;
+  font-weight: 700;
+}
+
+.calendar td a {
+  color: #06c8d4;
+}
+
+/* ── Help text ── */
+.help,
+.helptext,
+p.help {
+  color: #4a4b5e;
+}
+
+/* ── Pagination ── */
+.paginator {
+  background: #13141c;
+  border: 1px solid #1e2030;
+  border-radius: 6px;
+  color: #8a8b9e;
+}
+
+.paginator a:link,
+.paginator a:visited {
+  color: #06c8d4;
+}
+
+/* ── Related widget styling ── */
+.related-lookup,
+.related-widget-wrapper select + a,
+.datetimeshortcuts a {
+  color: #06c8d4;
+}
+
+/* ── Collapse toggle ── */
+fieldset.collapse .collapse-toggle {
+  color: #06c8d4;
+}
+
+/* ── Scrollbar (webkit) ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0c0d11;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2b3d;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4b5e;
+}

@@ -1,0 +1,33 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Delete Athlete | AlphaMinds{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-am-bg text-white">
+  <div class="mx-auto max-w-2xl px-4 py-8">
+    <a href="{% url 'frontend:staff_athlete_detail' athlete.id %}" class="text-sm text-am-cyan hover:text-cyan-200">
+      ← Back to athlete
+    </a>
+
+    <div class="mt-4 rounded-3xl border border-red-500/20 bg-am-surface p-6">
+      <div class="text-xs uppercase tracking-[0.18em] text-red-300">Delete Athlete</div>
+      <h1 class="mt-2 text-3xl font-semibold">{{ athlete.full_name }}</h1>
+      <p class="mt-3 text-sm text-zinc-300">
+        This will mark the athlete as inactive. Historical data remains preserved.
+      </p>
+
+      <form method="post" class="mt-8 flex flex-wrap gap-3">
+        {% csrf_token %}
+        <button type="submit"
+                class="rounded-xl bg-red-500 px-5 py-3 font-semibold text-white transition hover:bg-red-400">
+          Confirm Delete
+        </button>
+        <a href="{% url 'frontend:staff_athlete_detail' athlete.id %}"
+           class="rounded-xl border border-am-border px-5 py-3 text-zinc-200 transition hover:bg-am-alt">
+          Cancel
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+<div id="contact-modal"
+     class="fixed inset-0 z-50 bg-am-bg/70 backdrop-blur-sm flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-2xl rounded-3xl border border-am-border bg-am-surface shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-am-border">
+      <div>
+        <h3 class="text-2xl font-bold text-am-cyan">Get Started with Alpha Minds</h3>
+        <p class="text-sm text-zinc-400 mt-1">Share your details and our team will reach out.</p>
+      </div>
+      <button type="button"
+              class="w-10 h-10 rounded-full border border-am-border text-zinc-300 hover:text-white hover:bg-am-alt transition"
+              hx-get="{% url 'frontend:contact_close' %}"
+              hx-target="#contact-modal-wrapper"
+              hx-swap="innerHTML">
+        ×
+      </button>
+    </div>
+
+    <div class="p-6" id="contact-form-content">
+      {% include "frontend/partials/contact_form_fields.html" %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+{% load static i18n %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/alphamind_theme.css' %}">
+{% endblock %}
+
+{% block title %}{{ title }} | AlphaMinds{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">AlphaMinds</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

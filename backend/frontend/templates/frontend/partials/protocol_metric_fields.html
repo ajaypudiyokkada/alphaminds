@@ -1,0 +1,30 @@
+{% if selected_protocol %}
+  <div class="mb-5 rounded-2xl border border-am-border bg-am-alt/70 px-4 py-4">
+    <div class="text-xs uppercase tracking-[0.16em] text-am-cyan">Selected Protocol</div>
+    <div class="mt-2 text-lg font-semibold text-white">{{ selected_protocol.name }}</div>
+    <div class="mt-1 text-sm text-zinc-400">
+      {{ metric_definitions|length }} metric{{ metric_definitions|length|pluralize }} ready for input
+    </div>
+  </div>
+{% endif %}
+
+{% if metric_form.fields %}
+  <div class="space-y-5">
+    {% for field in metric_form %}
+      <div>
+        <label class="block mb-2 text-sm text-zinc-300">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+          <div class="mt-1 text-xs text-zinc-500">{{ field.help_text }}</div>
+        {% endif %}
+        {% if field.errors %}
+          <div class="mt-1 text-sm text-red-400">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="rounded-2xl border border-dashed border-am-border bg-am-alt px-4 py-6 text-zinc-500">
+    Select a protocol to load its metric definitions.
+  </div>
+{% endif %}

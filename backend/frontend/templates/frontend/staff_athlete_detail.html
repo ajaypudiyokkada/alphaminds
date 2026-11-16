@@ -1,0 +1,122 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}{{ athlete.full_name }} | Staff | AlphaMinds{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-am-bg text-white">
+  <div class="mx-auto max-w-6xl px-4 py-6">
+    <a href="{% url 'frontend:staff_home' %}" class="text-sm text-am-cyan hover:text-cyan-200">
+      ← Back to staff dashboard
+    </a>
+
+    <div class="mt-4 rounded-3xl border border-am-border bg-am-surface p-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Athlete Profile</div>
+          <h1 class="mt-2 text-3xl font-semibold">{{ athlete.full_name }}</h1>
+          <div class="mt-2 text-sm text-zinc-400">
+            {{ athlete.email|default:"No email" }}{% if athlete.phone %} • {{ athlete.phone }}{% endif %}
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="{% url 'frontend:staff_athlete_update' athlete.id %}"
+             class="rounded-xl border border-am-border px-4 py-3 text-sm text-zinc-200 transition hover:bg-am-alt">
+            Edit Athlete
+          </a>
+          <a href="{% url 'frontend:assessment_create' %}?athlete={{ athlete.id }}"
+             class="rounded-xl am-gradient-bg px-4 py-3 text-sm font-semibold text-white transition hover:bg-am-cyan">
+            Book Assessment
+          </a>
+          <a href="{% url 'frontend:staff_athlete_delete' athlete.id %}"
+             class="rounded-xl border border-red-500/40 px-4 py-3 text-sm text-red-200 transition hover:bg-red-500/10">
+            Delete Athlete
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-6 lg:grid-cols-3">
+      <div class="rounded-3xl border border-am-border bg-am-surface p-6">
+        <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Details</div>
+        <div class="mt-5 space-y-4 text-sm">
+          <div>
+            <div class="text-zinc-500">Date of Birth</div>
+            <div class="mt-1 text-zinc-100">{{ athlete.date_of_birth|default:"—" }}</div>
+          </div>
+          <div>
+            <div class="text-zinc-500">Gender</div>
+            <div class="mt-1 text-zinc-100">{{ athlete.get_gender_display|default:"—" }}</div>
+          </div>
+          <div>
+            <div class="text-zinc-500">Dominant Hand</div>
+            <div class="mt-1 text-zinc-100">{{ athlete.dominant_hand|default:"—" }}</div>
+          </div>
+          <div>
+            <div class="text-zinc-500">Notes</div>
+            <div class="mt-1 text-zinc-100 whitespace-pre-line">{{ athlete.notes|default:"—" }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2 rounded-3xl border border-am-border bg-am-surface p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-xs uppercase tracking-[0.18em] text-am-cyan">Assessment Workflow</div>
+            <h2 class="mt-2 text-2xl font-semibold">Sessions</h2>
+          </div>
+          <a href="{% url 'frontend:assessment_create' %}?athlete={{ athlete.id }}"
+             class="text-sm text-am-cyan hover:text-cyan-200">
+            Book new session
+          </a>
+        </div>
+
+        <div class="mt-5 space-y-4">
+          {% for session in sessions %}
+            <div class="rounded-2xl border border-am-border bg-am-alt/70 p-4">
+              <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <div class="text-sm text-zinc-400">{{ session.assessed_on|date:"d M Y, h:i A" }}</div>
+                  <div class="mt-1 text-lg font-semibold text-white">{{ session.protocol.name }}</div>
+                  <div class="text-sm text-zinc-300">{{ session.protocol.framework.name }}</div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                  <span class="rounded-full border border-am-border px-3 py-1 text-xs uppercase tracking-wide text-zinc-200">
+                    {{ session.status }}
+                  </span>
+
+                  {% if session.status == "booked" %}
+                    <a href="{% url 'frontend:assessment_mark_complete' session.id %}"
+                       class="rounded-lg am-gradient-bg px-3 py-2 text-sm font-medium text-white hover:bg-am-cyan">
+                      Mark Complete
+                    </a>
+                  {% elif session.status == "completed" %}
+                    <a href="{% url 'frontend:assessment_capture' session.id %}"
+                       class="rounded-lg border border-am-border px-3 py-2 text-sm text-zinc-200 hover:bg-am-alt">
+                      Capture Metrics
+                    </a>
+                    <a href="{% url 'frontend:assessment_publish' session.id %}"
+                       class="rounded-lg bg-green-500 px-3 py-2 text-sm font-medium text-white hover:bg-green-400">
+                      Publish
+                    </a>
+                  {% elif session.status == "published" %}
+                    <a href="{% url 'frontend:athlete_session_detail' session.id %}"
+                       class="rounded-lg border border-am-border px-3 py-2 text-sm text-zinc-200 hover:bg-am-alt">
+                      View Published
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <div class="rounded-2xl border border-dashed border-am-border p-5 text-sm text-zinc-400">
+              No sessions recorded for this athlete yet.
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

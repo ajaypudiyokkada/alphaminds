@@ -1,0 +1,45 @@
+<div id="assessment-enrollment-fields" class="grid gap-4 md:grid-cols-3">
+  <div>
+    <label class="mb-2 block text-sm text-zinc-300" for="id_enrollment">Enrollment</label>
+    <select
+      name="enrollment"
+      id="id_enrollment"
+      class="w-full rounded-xl border border-am-border bg-am-alt px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-am-cyan"
+    >
+      <option value="">---------</option>
+      {% for enrollment in enrollments %}
+        <option value="{{ enrollment.id }}" {% if selected_enrollment and enrollment.id == selected_enrollment.id %}selected{% endif %}>
+          {{ enrollment.sport.name }} • {{ enrollment.center.name }} • {{ enrollment.start_date }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div>
+    <label class="mb-2 block text-sm text-zinc-300" for="id_center">Center</label>
+    <input
+      type="text"
+      id="id_center"
+      value="{% if selected_enrollment %}{{ selected_enrollment.center.name }}{% endif %}"
+      class="w-full rounded-xl border border-am-border bg-am-alt px-4 py-3 text-zinc-300"
+      readonly
+    >
+    {% if selected_enrollment %}
+      <input type="hidden" name="center" value="{{ selected_enrollment.center.id }}">
+    {% endif %}
+  </div>
+
+  <div>
+    <label class="mb-2 block text-sm text-zinc-300" for="id_sport">Sport</label>
+    <input
+      type="text"
+      id="id_sport"
+      value="{% if selected_enrollment %}{{ selected_enrollment.sport.name }}{% endif %}"
+      class="w-full rounded-xl border border-am-border bg-am-alt px-4 py-3 text-zinc-300"
+      readonly
+    >
+    {% if selected_enrollment %}
+      <input type="hidden" name="sport" value="{{ selected_enrollment.sport.id }}">
+    {% endif %}
+  </div>
+</div>

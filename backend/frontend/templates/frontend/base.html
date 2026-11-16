@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AlphaMinds{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            am: {
+              bg: '#0c0d11',
+              surface: '#13141c',
+              alt: '#1a1b25',
+              border: '#1e2030',
+              cyan: '#06c8d4',
+              indigo: '#6366f1',
+              violet: '#8b2fc9',
+              muted: '#8a8b9e',
+              dim: '#4a4b5e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <style>
+    .am-gradient-bar { background: linear-gradient(90deg, #06c8d4, #6366f1, #8b2fc9); }
+    .am-gradient-bg  { background: linear-gradient(135deg, #06c8d4, #6366f1, #8b2fc9); }
+    .am-gradient-text {
+      background: linear-gradient(90deg, #06c8d4, #6366f1, #8b2fc9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .am-glow { box-shadow: 0 0 40px rgba(6,200,212,0.12), 0 0 80px rgba(99,102,241,0.06); }
+
+    /* ── Global form input styling (dark theme) ── */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="url"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="search"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="time"],
+    textarea,
+    select {
+      background-color: #1a1b25;
+      color: #e0e1ec;
+      border: 1px solid #1e2030;
+      border-radius: 0.75rem;
+      padding: 0.625rem 1rem;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #06c8d4;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(6,200,212,0.15);
+    }
+    input::placeholder,
+    textarea::placeholder {
+      color: #4a4b5e;
+    }
+    /* Browser autofill override */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+      -webkit-text-fill-color: #e0e1ec;
+      -webkit-box-shadow: 0 0 0px 1000px #1a1b25 inset;
+      border-color: #1e2030;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+    /* Select dropdown arrow */
+    select {
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8b9e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2.5rem;
+    }
+    /* Django form error lists */
+    .errorlist {
+      color: #ef4444;
+      font-size: 0.8rem;
+      list-style: none;
+      padding: 0;
+      margin: 0.25rem 0 0;
+    }
+    .errorlist li {
+      padding: 0.25rem 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-am-bg text-white overflow-x-hidden">
+  <header class="border-b border-am-border bg-am-bg/90 sticky top-0 z-40 backdrop-blur-sm">
+    <div class="h-[2px] am-gradient-bar"></div>
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="{% url 'frontend:home' %}" class="flex items-center gap-3">
+        <img src="{% static 'frontend/img/alphaminds_logo.png' %}" alt="AlphaMinds" class="h-12 w-12 object-contain">
+        <div>
+          <div class="text-am-cyan font-semibold tracking-wide">The Alpha Minds</div>
+          <div class="text-xs text-am-muted">Be the best version of you</div>
+        </div>
+      </a>
+
+      <nav class="flex items-center gap-3">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'frontend:role_router' %}" class="px-4 py-2 rounded-xl border border-am-border text-am-cyan hover:bg-am-cyan/5 transition">
+            Dashboard
+          </a>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="px-4 py-2 rounded-xl am-gradient-bg text-white font-semibold hover:opacity-90 transition">
+              Logout
+            </button>
+          </form>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="max-w-5xl mx-auto px-4 pt-4 space-y-2">
+      {% for message in messages %}
+        <div class="rounded-xl border border-am-border bg-am-surface px-4 py-3 text-sm">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    (function () {
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return "";
+      }
+
+      document.addEventListener("click", async function (event) {
+        if (window.htmx) return;
+
+        const trigger = event.target.closest("[hx-get][hx-target]");
+        if (!trigger) return;
+
+        event.preventDefault();
+
+        const url = trigger.getAttribute("hx-get");
+        const targetSelector = trigger.getAttribute("hx-target");
+        const swapMode = trigger.getAttribute("hx-swap") || "innerHTML";
+        const target = document.querySelector(targetSelector);
+
+        if (!url || !target) return;
+
+        try {
+          const response = await fetch(url, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+          });
+          const html = await response.text();
+
+          if (swapMode === "outerHTML") {
+            target.outerHTML = html;
+          } else {
+            target.innerHTML = html;
+          }
+        } catch (error) {
+          console.error("Fallback hx-get failed:", error);
+        }
+      });
+
+      document.addEventListener("submit", async function (event) {
+        if (window.htmx) return;
+
+        const form = event.target.closest("form[hx-post][hx-target]");
+        if (!form) return;
+
+        event.preventDefault();
+
+        const url = form.getAttribute("hx-post");
+        const targetSelector = form.getAttribute("hx-target");
+        const swapMode = form.getAttribute("hx-swap") || "innerHTML";
+        const target = document.querySelector(targetSelector);
+
+        if (!url || !target) return;
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            body: formData,
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRFToken": getCookie("csrftoken")
+            }
+          });
+          const html = await response.text();
+
+          if (swapMode === "outerHTML") {
+            target.outerHTML = html;
+          } else {
+            target.innerHTML = html;
+          }
+        } catch (error) {
+          console.error("Fallback hx-post failed:", error);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

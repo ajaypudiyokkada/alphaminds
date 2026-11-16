@@ -1,0 +1,57 @@
+<div id="assessment-protocol-fields" class="grid gap-4 md:grid-cols-3">
+  <div>
+    <label class="mb-2 block text-sm text-zinc-300" for="id_domain">Domain</label>
+    <select
+      name="domain"
+      id="id_domain"
+      class="w-full rounded-xl border border-am-border bg-am-alt px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-am-cyan"
+      hx-get="{% url 'frontend:domain_framework_protocol_partial' %}"
+      hx-trigger="change"
+      hx-target="#assessment-protocol-fields-wrapper"
+      hx-include="[name='domain']"
+    >
+      <option value="">---------</option>
+      {% for domain in domains %}
+        <option value="{{ domain.id }}" {% if selected_domain and domain.id == selected_domain.id %}selected{% endif %}>
+          {{ domain.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div>
+    <label class="mb-2 block text-sm text-zinc-300" for="id_framework">Framework</label>
+    <select
+      name="framework"
+      id="id_framework"
+      class="w-full rounded-xl border border-am-border bg-am-alt px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-am-cyan"
+      hx-get="{% url 'frontend:domain_framework_protocol_partial' %}"
+      hx-trigger="change"
+      hx-target="#assessment-protocol-fields-wrapper"
+      hx-include="[name='domain'],[name='framework']"
+    >
+      <option value="">---------</option>
+      {% for framework in frameworks %}
+        <option value="{{ framework.id }}" {% if selected_framework and framework.id == selected_framework.id %}selected{% endif %}>
+          {{ framework.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div>
+    <label class="mb-2 block text-sm text-zinc-300" for="id_protocol">Protocol</label>
+    <select
+      name="protocol"
+      id="id_protocol"
+      class="w-full rounded-xl border border-am-border bg-am-alt px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-am-cyan"
+    >
+      <option value="">---------</option>
+      {% for protocol in protocols %}
+        <option value="{{ protocol.id }}">
+          {{ protocol.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
