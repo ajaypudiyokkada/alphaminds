@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
     'corsheaders',
     'core',
     'orgs',
@@ -124,6 +125,19 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "AlphaMinds API",
+    "DESCRIPTION": "API used by the AlphaMinds athlete mobile app.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": r"/api/v1",
+    "ENUM_NAME_OVERRIDES": {
+        "EnrollmentStatusEnum": "core.choices.EnrollmentStatusChoices",
+        "SessionStatusEnum": "core.choices.AssessmentSessionStatusChoices",
+    },
 }
 
 # ── Simple JWT ────────────────────────────────────────────────────────────────

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from athletes.models import Athlete, AthleteEnrollment
@@ -60,6 +61,7 @@ class MetricValueSerializer(serializers.ModelSerializer):
     )
     units = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.CharField())
     def get_units(self, obj):
         return obj.units or getattr(obj.metric_definition, "units", "")
 
@@ -108,6 +110,7 @@ class AssessmentSessionDetailSerializer(serializers.ModelSerializer):
     sport_name = serializers.CharField(source="sport.name", read_only=True)
     metric_values = serializers.SerializerMethodField()
 
+    @extend_schema_field(MetricValueSerializer(many=True))
     def get_metric_values(self, obj):
         from core.choices import AssessmentSessionStatusChoices
         if obj.status != AssessmentSessionStatusChoices.PUBLISHED:
