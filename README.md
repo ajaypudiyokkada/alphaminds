@@ -28,6 +28,23 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
+## Run with Docker
+
+Requires Docker with Compose. The database is PostgreSQL 16.
+
+```bash
+cp backend/.env.example backend/.env      # set SECRET_KEY, DB_NAME, DB_USER, DB_PASSWORD
+docker compose --env-file backend/.env up -d --build
+docker compose ps                         # db should be "healthy", backend "running"
+```
+
+The backend container runs `migrate` on start and serves on http://localhost:8000 (gunicorn + WhiteNoise for static files). To load an existing data export:
+
+```bash
+docker compose exec backend python manage.py loaddata /tmp/mysql_dump.json   # after docker cp backup/mysql_dump.json <container>:/tmp/
+```
+
+To run Django outside Docker against the Postgres container, keep `DB_HOST=localhost` in `backend/.env`. `docker compose down` stops everything; the data persists in the `pgdata` volume.
 ## Running the mobile app
 
 ```bash

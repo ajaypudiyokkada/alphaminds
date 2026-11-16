@@ -9,7 +9,7 @@ AlphaMinds is a mobile-first athlete intelligence platform built as a Django mon
 - Python 3.12, Django, Django REST Framework
 - Auth for the API: JWT (`rest_framework_simplejwt`), with `corsheaders` for CORS
 - Web UI: Django templates, with HTMX-style partials (see the `*_partial` views)
-- Database in `settings.py`: **MySQL** (`alphamindsdb`). A PostgreSQL config is commented out.
+- Database: **PostgreSQL** (configured via `backend/.env`, run through Docker Compose). MySQL remains supported as a fallback by setting `DB_ENGINE=django.db.backends.mysql`.
 - Entry points: `manage.py`, `alphaminds/` (settings, urls, wsgi, asgi)
 
 ## Apps
@@ -61,10 +61,10 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
-This assumes MySQL is reachable with the settings in `alphaminds/settings.py`.
+This assumes the database in `backend/.env` is reachable (see the root README for the Docker setup).
 
 ## Observations and housekeeping
-- **Docs vs. settings:** ARCHITECTURE.md says PostgreSQL, but `settings.py` uses MySQL.
+- **Docs vs. settings:** both now use PostgreSQL (MySQL is kept only as a fallback).
 - **Secrets:** the DB password is hardcoded in `settings.py`, with `DEBUG = True` and LAN IPs in `ALLOWED_HOSTS`. Move these to environment variables before any deployment.
 - **Scope creep:** the `programs` app goes beyond the v0.1 scope in ARCHITECTURE.md, so the doc is partly out of date.
 - **Leftover files:** `views_bkp.py`, `*_bkp.html`, `home.html.bkp`, `~$AlphaMindDashboard.xlsx` (Excel lock file) and committed `__pycache__` directories should be cleaned up or git-ignored.
