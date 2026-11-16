@@ -1,0 +1,723 @@
+openapi: 3.0.3
+info:
+  title: AlphaMinds API
+  version: 1.0.0
+  description: API used by the AlphaMinds athlete mobile app.
+paths:
+  /api/v1/athlete/dashboard/:
+    get:
+      operationId: athlete_dashboard_retrieve
+      tags:
+      - athlete
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/athlete/me/:
+    get:
+      operationId: athlete_me_retrieve
+      tags:
+      - athlete
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Athlete'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/athlete/sessions/:
+    get:
+      operationId: athlete_sessions_list
+      tags:
+      - athlete
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssessmentSessionList'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/athlete/sessions/{session_id}/:
+    get:
+      operationId: athlete_sessions_retrieve
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - athlete
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentSessionDetail'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/forgot-password/:
+    post:
+      operationId: auth_forgot_password_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No content
+  /api/v1/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshResponse'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/leads/:
+    post:
+      operationId: leads_create
+      tags:
+      - leads
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadInquiry'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LeadInquiry'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LeadInquiry'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '400':
+          description: 'Field errors: {field: [messages]}'
+components:
+  schemas:
+    AssessmentSessionDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        session_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        assessed_on:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/SessionStatusEnum'
+        protocol_name:
+          type: string
+          readOnly: true
+        framework_name:
+          type: string
+          readOnly: true
+        domain_name:
+          type: string
+          readOnly: true
+        sport_name:
+          type: string
+          readOnly: true
+        notes:
+          type: string
+        metric_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricValue'
+          readOnly: true
+      required:
+      - assessed_on
+      - domain_name
+      - framework_name
+      - id
+      - metric_values
+      - protocol_name
+      - session_uuid
+      - sport_name
+    AssessmentSessionList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        session_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        assessed_on:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/SessionStatusEnum'
+        protocol_name:
+          type: string
+          readOnly: true
+        framework_name:
+          type: string
+          readOnly: true
+        domain_name:
+          type: string
+          readOnly: true
+      required:
+      - assessed_on
+      - domain_name
+      - framework_name
+      - id
+      - protocol_name
+      - session_uuid
+    Athlete:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        full_name:
+          type: string
+          maxLength: 255
+        first_name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: string
+          maxLength: 100
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/AthleteGenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        gender_display:
+          type: string
+          readOnly: true
+        age:
+          type: integer
+          readOnly: true
+        age_group:
+          type: string
+          readOnly: true
+        email:
+          nullable: true
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        phone:
+          type: string
+          nullable: true
+          maxLength: 30
+        dominant_hand:
+          type: string
+          maxLength: 20
+      required:
+      - age
+      - age_group
+      - first_name
+      - full_name
+      - gender_display
+      - id
+    AthleteGenderEnum:
+      enum:
+      - male
+      - female
+      - other
+      - prefer_not_to_say
+      type: string
+      description: |-
+        * `male` - Male
+        * `female` - Female
+        * `other` - Other
+        * `prefer_not_to_say` - Prefer not to say
+    BlankEnum:
+      enum:
+      - ''
+    Dashboard:
+      type: object
+      properties:
+        athlete:
+          $ref: '#/components/schemas/Athlete'
+        primary_enrollment:
+          allOf:
+          - $ref: '#/components/schemas/Enrollment'
+          nullable: true
+        recent_sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentSessionList'
+      required:
+      - athlete
+      - primary_enrollment
+      - recent_sessions
+    Detail:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sport_name:
+          type: string
+          readOnly: true
+        center_name:
+          type: string
+          readOnly: true
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        status:
+          $ref: '#/components/schemas/EnrollmentStatusEnum'
+        batch_name:
+          type: string
+          maxLength: 100
+      required:
+      - center_name
+      - id
+      - sport_name
+      - start_date
+    EnrollmentStatusEnum:
+      enum:
+      - active
+      - inactive
+      - completed
+      - suspended
+      - dropped
+      type: string
+      description: |-
+        * `active` - Active
+        * `inactive` - Inactive
+        * `completed` - Completed
+        * `suspended` - Suspended
+        * `dropped` - Dropped
+    ForgotPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    InquiryTypeEnum:
+      enum:
+      - athlete_mental_toughness
+      - athlete_cognitive_vision
+      - athlete_emotional_regulation
+      - academy_partnership
+      type: string
+      description: |-
+        * `athlete_mental_toughness` - Athlete - Personality & Mental Toughness Assessment
+        * `athlete_cognitive_vision` - Athlete - Cognitive Vision Evaluation
+        * `athlete_emotional_regulation` - Athlete - Emotional Regulation Program
+        * `academy_partnership` - Academy - Explore Alpha Minds
+    InquiryTypesEnum:
+      enum:
+      - athlete_mental_toughness
+      - athlete_cognitive_vision
+      - athlete_emotional_regulation
+      - academy_partnership
+      type: string
+      description: |-
+        * `athlete_mental_toughness` - athlete_mental_toughness
+        * `athlete_cognitive_vision` - athlete_cognitive_vision
+        * `athlete_emotional_regulation` - athlete_emotional_regulation
+        * `academy_partnership` - academy_partnership
+    LeadInquiry:
+      type: object
+      properties:
+        inquiry_type:
+          allOf:
+          - $ref: '#/components/schemas/InquiryTypeEnum'
+          readOnly: true
+        inquiry_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/InquiryTypesEnum'
+          minItems: 1
+        full_name:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        mobile_number:
+          type: string
+          pattern: ^(?:\+91|91)?[6-9]\d{9}$
+          maxLength: 15
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/LeadInquiryGenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        parent_mobile:
+          oneOf:
+          - type: string
+            pattern: ^(?:\+91|91)?[6-9]\d{9}$
+            maxLength: 15
+          - type: string
+            maxLength: 0
+        pincode:
+          type: string
+          maxLength: 10
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        athlete_sport:
+          type: string
+          maxLength: 100
+        academy_name:
+          type: string
+          maxLength: 255
+        contact_person_name:
+          type: string
+          maxLength: 255
+        designation:
+          type: string
+          maxLength: 100
+        academy_city:
+          type: string
+          maxLength: 100
+        athlete_count:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          nullable: true
+        message:
+          type: string
+      required:
+      - email
+      - full_name
+      - inquiry_type
+      - inquiry_types
+      - mobile_number
+    LeadInquiryGenderEnum:
+      enum:
+      - M
+      - F
+      - O
+      type: string
+      description: |-
+        * `M` - Male
+        * `F` - Female
+        * `O` - Other
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - password
+      - username
+    LoginResponse:
+      type: object
+      properties:
+        access:
+          type: string
+        refresh:
+          type: string
+        athlete_id:
+          type: integer
+          nullable: true
+        full_name:
+          type: string
+      required:
+      - access
+      - athlete_id
+      - full_name
+      - refresh
+    LogoutRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+    MetricValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        metric_name:
+          type: string
+          readOnly: true
+        metric_label:
+          type: string
+          readOnly: true
+        value_data_type:
+          $ref: '#/components/schemas/ValueDataTypeEnum'
+        numeric_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,4})?$
+          nullable: true
+        text_value:
+          type: string
+        boolean_value:
+          type: boolean
+          nullable: true
+        date_value:
+          type: string
+          format: date
+          nullable: true
+        display_value:
+          type: string
+          maxLength: 255
+        units:
+          type: string
+          readOnly: true
+        interpretation_direction:
+          type: string
+          readOnly: true
+        is_higher_better:
+          type: boolean
+          readOnly: true
+        sequence_no:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        notes:
+          type: string
+      required:
+      - id
+      - interpretation_direction
+      - is_higher_better
+      - metric_label
+      - metric_name
+      - units
+      - value_data_type
+    RefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+      required:
+      - refresh
+    RefreshResponse:
+      type: object
+      properties:
+        access:
+          type: string
+      required:
+      - access
+    SessionStatusEnum:
+      enum:
+      - draft
+      - booked
+      - completed
+      - published
+      - cancelled
+      - invalidated
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `booked` - Booked
+        * `completed` - Completed
+        * `published` - Published
+        * `cancelled` - Cancelled
+        * `invalidated` - Invalidated
+    ValueDataTypeEnum:
+      enum:
+      - integer
+      - decimal
+      - text
+      - boolean
+      - date
+      - json
+      type: string
+      description: |-
+        * `integer` - Integer
+        * `decimal` - Decimal
+        * `text` - Text
+        * `boolean` - Boolean
+        * `date` - Date
+        * `json` - JSON
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

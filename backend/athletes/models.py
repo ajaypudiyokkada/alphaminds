@@ -138,9 +138,11 @@ class Athlete(TimeStampedActiveModel):
 
         meta = self.metadata or {}
         meta["login_username"] = user.username
-        meta["temporary_password"] = temp_password
-        meta["credentials_shared"] = False
         self.metadata = meta
+
+        # Never persisted. Available only on this in-memory instance so the
+        # creating view can show it once to staff.
+        self.generated_password = temp_password
 
     def save(self, *args, **kwargs):
         generated_full_name = self._generate_full_name()

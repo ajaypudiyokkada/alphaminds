@@ -786,6 +786,13 @@ def staff_athlete_create_view(request):
 
     if request.method == "POST" and form.is_valid():
         athlete = form.save()
+        generated_password = getattr(athlete, "generated_password", None)
+        if generated_password:
+            messages.success(
+                request,
+                f"Login created for {athlete.full_name}. Username: {athlete.user.username} / "
+                f"temporary password: {generated_password} (shown once, not stored; share it securely).",
+            )
         return redirect("frontend:staff_home")
 
     return render(request, "frontend/staff_athlete_form.html", {"form": form})
