@@ -1,0 +1,17 @@
+{% extends "frontend/base.html" %}
+
+{% block title %}Enquire | AlphaMinds{% endblock %}
+
+{% block content %}
+<section class="max-w-2xl mx-auto px-4 py-12">
+  <div class="rounded-3xl border border-am-border bg-am-surface shadow-2xl">
+    <div class="px-6 py-5 border-b border-am-border">
+      <h1 class="text-2xl font-bold text-am-cyan">Get Started with Alpha Minds</h1>
+      <p class="text-sm text-zinc-400 mt-1">Share your details and our team will reach out.</p>
+    </div>
+    <div class="p-6" id="contact-form-content">
+      {% include "frontend/partials/contact_form_fields.html" %}
+    </div>
+  </div>
+</section>
+{% endblock %}

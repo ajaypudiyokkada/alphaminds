@@ -1,0 +1,222 @@
+
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0d11">
+  <meta name="description" content="AlphaMinds — sports mental-performance development. Higher Within.">
+  <title>AlphaMinds | Higher Within</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap">
+  <link rel="stylesheet" href="{% static 'landing/css/main.css' %}">
+  <style>
+    /* Temporary text logo (styled like the footer) until logo.svg is ready. */
+    .brand-text { display: block; font-weight: 850; letter-spacing: .08em; color: #fff; font-size: 15px; line-height: 1.2; }
+    .brand-text small { display: block; color: #b08bff; font-size: 9px; letter-spacing: .24em; }
+    /* Dark fallback if the Personality image fails to load. */
+    .pillar-personality { background: var(--surface); }
+  </style>
+
+  <script src="{% static 'landing/js/main.js' %}" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#home" aria-label="AlphaMinds home">
+        <span class="brand-text">ALPHA MINDS <small>HIGHER WITHIN</small></span>
+      </a>
+
+      <button class="menu-toggle" type="button"
+        aria-label="Open menu" aria-controls="main-nav"
+        aria-expanded="false">☰</button>
+
+      <nav id="main-nav" class="navigation" aria-label="Main navigation">
+        <a class="active" href="#home">Home</a>
+        <a href="#method">Our Method</a>
+        <a href="#pillars">Five Pillars</a>
+        <a href="#programs">Programs</a>
+        <a href="#about">About</a>
+      </nav>
+      <a class="btn btn-primary header-cta" href="{% url 'login' %}">
+        Enquire Now <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section id="home" class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">MENTAL PERFORMANCE FOR ATHLETES</p>
+          <h1><span class="gradient-text">Higher Within.</span></h1>
+          <p class="hero-subtitle">
+            The Art of Self-Steering Under Pressure
+          </p>
+          <p class="hero-description">
+            Build the mindset, skills and habits to perform with
+            focus, confidence and composure.
+          </p>
+          <a class="btn btn-primary" href="#programs">
+            Explore Programs <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+
+        <div class="hero-visual" aria-label="Athlete mindset visual">
+          <div class="hero-orbit" aria-hidden="true"></div>
+          <img class="hero-athlete"
+               src="{% static 'landing/images/hero-athlete.webp' %}"
+               alt="Athlete looking upward with determination" onerror="this.style.display='none'">
+          <div class="orbit-labels" aria-label="Focus, Control, Adapt, Grow, Perform">
+            <span>Focus</span>
+            <span>Control</span>
+            <span>Adapt</span>
+            <span>Grow</span>
+            <span>Perform</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOURNEY -->
+    <section id="method" class="section journey">
+      <div class="container">
+        <h2 class="section-title">The AlphaMinds Journey</h2>
+        <div class="journey-grid">
+          <div class="journey-track" aria-hidden="true"></div>
+          <article class="journey-step">
+            <div class="journey-icon">◎</div>
+            <h3>Assess</h3>
+            <p>Know where you are.</p>
+          </article>
+          <article class="journey-step">
+            <div class="journey-icon">✧</div>
+            <h3>Develop</h3>
+            <p>Build the right skills.</p>
+          </article>
+          <article class="journey-step">
+            <div class="journey-icon">↗</div>
+            <h3>Apply</h3>
+            <p>Use it in real situations.</p>
+          </article>
+          <article class="journey-step">
+            <div class="journey-icon">⚑</div>
+            <h3>Progress</h3>
+            <p>Grow and sustain.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIVE PILLARS -->
+    <section id="pillars" class="section pillars">
+      <div class="container">
+        <h2 class="section-title">Five Pillars of Development</h2>
+        <div class="pillar-grid">
+          <article class="pillar-card pillar-personality">
+            <img src="{% static 'landing/images/pillar-personality.webp' %}"
+                 alt="Athlete preparing mentally" onerror="this.style.display='none'">
+            <div class="pillar-content">
+              <span aria-hidden="true">♙</span>
+              <h3>Personality<br>Growth</h3>
+            </div>
+          </article>
+          <article class="pillar-card pillar-cognitive">
+            <img src="{% static 'landing/images/pillar-cognitive.webp' %}"
+                 alt="Athlete concentrating on performance" onerror="this.style.display='none'">
+            <div class="pillar-content">
+              <span aria-hidden="true">◈</span>
+              <h3>Cognitive<br>Performance</h3>
+            </div>
+          </article>
+          <article class="pillar-card pillar-emotional">
+            <img src="{% static 'landing/images/pillar-emotional.webp' %}"
+                 alt="Athlete practising calm and composure" onerror="this.style.display='none'">
+            <div class="pillar-content">
+              <span aria-hidden="true">✿</span>
+              <h3>Emotional<br>Regulation</h3>
+            </div>
+          </article>
+          <article class="pillar-card pillar-adaptability">
+            <img src="{% static 'landing/images/pillar-adaptability.webp' %}"
+                 alt="Athlete adapting to a challenge" onerror="this.style.display='none'">
+            <div class="pillar-content">
+              <span aria-hidden="true">⟳</span>
+              <h3>Adaptability<br>&amp; Resilience</h3>
+            </div>
+          </article>
+          <article class="pillar-card pillar-social">
+            <img src="{% static 'landing/images/pillar-social.webp' %}"
+                 alt="Athletes supporting one another" onerror="this.style.display='none'">
+            <div class="pillar-content">
+              <span aria-hidden="true">♧</span>
+              <h3>Social<br>Connectedness</h3>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRAMS -->
+    <section id="programs" class="section programs">
+      <div class="container">
+        <h2 class="section-title">Programs for Every Athlete</h2>
+        <div class="program-grid">
+          <article class="program-card">
+            <div class="program-icon" aria-hidden="true">♧</div>
+            <h3>Basic</h3>
+            <p>Group learning to build strong mental habits.</p>
+            <p class="program-detail">No formal assessment.</p>
+            <a href="#enquire" data-program="Basic"
+               aria-label="Enquire about Basic">↗</a>
+          </article>
+
+          <article class="program-card">
+            <div class="program-icon" aria-hidden="true">◇</div>
+            <h3>Intermediate</h3>
+            <p>In-house assessment and focused development.</p>
+            <p class="program-detail">Athlete-app questionnaire.</p>
+            <a href="#enquire" data-program="Intermediate"
+               aria-label="Enquire about Intermediate">↗</a>
+          </article>
+
+          <article class="program-card elite">
+            <div class="program-icon" aria-hidden="true">♛</div>
+            <h3>Elite Athlete</h3>
+            <p>MTQ assessment with personalised development.</p>
+            <p class="program-detail">MTQ-based Performance Flow.</p>
+            <a href="#enquire" data-program="Elite Athlete"
+               aria-label="Enquire about Elite Athlete">↗</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING CTA -->
+    <section id="enquire" class="closing-cta">
+      <img src="{% static 'landing/images/cta-landscape.webp' %}"
+           alt="Athlete standing on a mountain ridge at sunrise" onerror="this.style.display='none'">
+      <div class="container closing-content">
+        <div>
+          <h2>Ready to go<br>Higher Within?</h2>
+          <p>Take the next step in your mental-performance journey.</p>
+        </div>
+        <a class="btn btn-primary" href="{% url 'login' %}">
+          Enquire Now <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer id="about" class="site-footer">
+    <div class="container footer-inner">
+      <span>ALPHA MINDS <small>HIGHER WITHIN</small></span>
+      <p>The Art of Self-Steering Under Pressure</p>
+    </div>
+  </footer>
+</body>
+</html>

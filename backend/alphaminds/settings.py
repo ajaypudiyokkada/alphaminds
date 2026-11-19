@@ -107,7 +107,7 @@ STATICFILES_DIRS = [BASE_DIR / "core" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
-    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    "staticfiles": {"BACKEND": "core.storage.LenientManifestStaticFilesStorage"},
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

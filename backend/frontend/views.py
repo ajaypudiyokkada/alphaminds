@@ -80,7 +80,7 @@ def user_is_athlete_role(user):
 
 
 def home_view(request):
-    return render(request, "frontend/home.html")
+    return render(request, "landing/index.html")
 
 
 def _safe_decimal(value):
@@ -539,6 +539,35 @@ def assessment_session_create_view(request):
         "selected_framework": selected_framework,
         "selected_protocol_id": selected_protocol_id,
     })
+
+
+def contact_page_view(request):
+    """Full-page enquiry form (used by the landing page "Enquire Now" buttons).
+
+    Reuses the same forms, field partial and HTMX submit endpoint as the modal.
+    ?program=... is accepted but not used yet.
+    """
+    inquiry_type = request.GET.get("inquiry_type")
+    athlete_types = {
+        LeadInquiryType.ATHLETE_MENTAL_TOUGHNESS,
+        LeadInquiryType.ATHLETE_COGNITIVE_VISION,
+        LeadInquiryType.ATHLETE_EMOTIONAL_REGULATION,
+    }
+    if inquiry_type == LeadInquiryType.ACADEMY_PARTNERSHIP:
+        form = AcademyLeadInquiryForm(inquiry_type=inquiry_type)
+    else:
+        if inquiry_type not in athlete_types:
+            inquiry_type = LeadInquiryType.ATHLETE_MENTAL_TOUGHNESS
+        form = AthleteLeadInquiryForm(inquiry_type=inquiry_type)
+    return render(
+        request,
+        "frontend/contact_page.html",
+        {
+            "form": form,
+            "inquiry_type": inquiry_type,
+            "form_title": dict(LeadInquiryType.choices).get(inquiry_type, "Inquiry"),
+        },
+    )
 
 
 def contact_form_partial(request):

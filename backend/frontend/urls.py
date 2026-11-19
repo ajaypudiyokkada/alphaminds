@@ -22,6 +22,7 @@ urlpatterns = [
         views.protocol_metric_definition_partial,
         name="protocol_metric_partial",
     ),
+    path("contact/", views.contact_page_view, name="contact_page"),
     path("contact/form/", views.contact_form_partial, name="contact_form_partial"),
     path("contact/submit/", views.submit_contact_form, name="contact_submit"),
     path("contact/close/", views.close_contact_modal, name="contact_close"),
