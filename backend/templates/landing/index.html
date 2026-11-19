@@ -5,6 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c0d11">
+  <link rel="icon" href="{% static 'landing/branding/favicon.ico' %}" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'landing/branding/favicon-32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'landing/branding/favicon-16.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/branding/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'landing/branding/site.webmanifest' %}">
   <meta name="description" content="AlphaMinds — sports mental-performance development. Higher Within.">
   <title>AlphaMinds | Higher Within</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,9 +18,6 @@
   <link rel="stylesheet" href="{% static 'landing/css/main.css' %}">
   <link rel="stylesheet" href="{% static 'landing/css/overrides.css' %}">
   <style>
-    /* Temporary text logo (styled like the footer) until logo.svg is ready. */
-    .brand-text { display: block; font-weight: 850; letter-spacing: .08em; color: #fff; font-size: 15px; line-height: 1.2; }
-    .brand-text small { display: block; color: #b08bff; font-size: 9px; letter-spacing: .24em; }
     /* Dark fallback if the Personality image fails to load. */
     .pillar-personality { background: var(--surface); }
   </style>
@@ -28,7 +30,10 @@
   <header class="site-header">
     <div class="container nav">
       <a class="brand" href="#home" aria-label="AlphaMinds home">
-        <span class="brand-text">ALPHA MINDS <small>HIGHER WITHIN</small></span>
+        <picture>
+          <source type="image/webp" srcset="{% static 'landing/branding/logo-horizontal-dark-header.webp' %}">
+          <img src="{% static 'landing/branding/logo-horizontal-dark-header.png' %}" alt="AlphaMinds" width="864" height="208" decoding="async">
+        </picture>
       </a>
 
       <button class="menu-toggle" type="button"
@@ -275,7 +280,12 @@
 
   <footer id="about" class="site-footer">
     <div class="container footer-inner">
-      <span>ALPHA MINDS <small>HIGHER WITHIN</small></span>
+      <a class="footer-logo" href="#home" aria-label="AlphaMinds">
+        <picture>
+          <source type="image/webp" srcset="{% static 'landing/branding/logo-horizontal-dark-header.webp' %}">
+          <img src="{% static 'landing/branding/logo-horizontal-dark-header.png' %}" alt="AlphaMinds" width="864" height="208" loading="lazy" decoding="async">
+        </picture>
+      </a>
       <p>The Art of Self-Steering Under Pressure</p>
     </div>
   </footer>

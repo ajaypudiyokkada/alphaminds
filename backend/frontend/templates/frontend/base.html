@@ -5,6 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}AlphaMinds{% endblock %}</title>
+  <link rel="icon" href="{% static 'landing/branding/favicon.ico' %}" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'landing/branding/favicon-32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'landing/branding/favicon-16.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/branding/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'landing/branding/site.webmanifest' %}">
+  <meta name="theme-color" content="#0c0d11">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -104,12 +110,11 @@
   <header class="border-b border-am-border bg-am-bg/90 sticky top-0 z-40 backdrop-blur-sm">
     <div class="h-[2px] am-gradient-bar"></div>
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="{% url 'frontend:home' %}" class="flex items-center gap-3">
-        <img src="{% static 'frontend/img/alphaminds_logo.png' %}" alt="AlphaMinds" class="h-12 w-12 object-contain">
-        <div>
-          <div class="text-am-cyan font-semibold tracking-wide">The Alpha Minds</div>
-          <div class="text-xs text-am-muted">Be the best version of you</div>
-        </div>
+      <a href="{% url 'frontend:home' %}" class="flex items-center" aria-label="AlphaMinds home">
+        <picture>
+          <source type="image/webp" srcset="{% static 'landing/branding/logo-horizontal-dark-header.webp' %}">
+          <img src="{% static 'landing/branding/logo-horizontal-dark-header.png' %}" alt="AlphaMinds" width="864" height="208" class="h-10 w-auto" decoding="async">
+        </picture>
       </a>
 
       <nav class="flex items-center gap-3">
