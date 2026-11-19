@@ -448,7 +448,8 @@
 @media (min-width: 1024px) {
   .site-header .container,
   .hero .container,
-  .pillars .container { width: calc(100% - 2 * clamp(20px, 4vw, 72px)); }
+  .pillars .container,
+  .closing-cta .container { width: calc(100% - 2 * clamp(20px, 4vw, 72px)); }
 
   .site-header .nav {
     min-height: clamp(68px, 5.5vw, 92px);
@@ -799,4 +800,98 @@
 }
 @media (min-width: 768px) and (max-width: 1023px) {
   .programs .program-card a { display: grid; place-items: center; width: 44px; height: 44px; right: 8px; bottom: 6px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Closing banner ("Ready to go Higher Within?")
+   ═══════════════════════════════════════════════════════════════════════ */
+.closing-cta {
+  min-height: clamp(340px, 31vw, 580px);                         /* ≈ width ÷ 3.2 */
+  background: #1b1b35;
+}
+.closing-cta > img {
+  object-fit: cover;
+  object-position: 50% 60%;                                      /* full athlete + peak, sky above */
+  filter: brightness(1.15) saturate(1.2);
+}
+/* Lighter overlay: the right half shows the sunset at full brightness */
+.closing-cta::after {
+  background: linear-gradient(90deg, rgba(11, 18, 37, .82) 0%, rgba(11, 18, 37, .55) 30%, rgba(11, 18, 37, 0) 55%);
+}
+
+/* Heading + subtitle on the left, button on the right, aligned with the subtitle row */
+.closing-cta .closing-content {
+  min-height: clamp(340px, 31vw, 580px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-content: center;
+  row-gap: 0;                                                    /* main.css sets gap: 24px; the heading-to-subtitle gap is the 16px margin */
+  column-gap: clamp(16px, 2vw, 32px);
+  align-items: center;
+  justify-content: stretch;
+}
+.closing-cta .closing-content > div { display: contents; }     /* h2 and p become grid items */
+.closing-cta .closing-content h2 {
+  grid-column: 1; grid-row: 1;
+  margin: 0;
+  font-size: clamp(34px, 4.2vw, 68px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+.closing-cta .closing-content p {
+  grid-column: 1; grid-row: 2;
+  max-width: none;
+  margin: 16px 0 0;
+  font-size: clamp(16px, 1.6vw, 26px);
+  line-height: 1.4;
+  color: #e6e6ef;
+}
+.closing-cta .closing-content .btn {
+  grid-column: 2; grid-row: 2;                                 /* same row as the subtitle, lower than centre */
+  justify-self: end;
+  align-self: center;
+  margin-top: 16px;
+  min-height: clamp(52px, 4.4vw, 68px);
+  min-width: clamp(200px, 19vw, 300px);
+  padding-inline: clamp(24px, 2.4vw, 40px);
+  font-size: clamp(15px, 1.3vw, 20px);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Tablet: shift the photo so the athlete stays clear of the button */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .closing-cta > img { object-position: 85% 60%; }
+}
+
+/* Mobile <768: text on top, button below, bright photo (athlete visible) underneath */
+@media (max-width: 767px) {
+  .closing-cta {
+    display: flex;
+    flex-direction: column;
+    min-height: 420px;
+    background: #0d1222;
+  }
+  .closing-cta::after { display: none; }
+  .closing-cta .closing-content {
+    order: 1;
+    min-height: 0;
+    display: block;
+    padding-block: 40px 24px;
+  }
+  .closing-cta .closing-content > div { display: block; }
+  .closing-cta .closing-content h2 { font-size: clamp(34px, 9.5vw, 48px); }
+  .closing-cta .closing-content p { max-width: none; font-size: clamp(16px, 4.2vw, 20px); margin-top: 14px; }
+  .closing-cta .closing-content .btn { margin-top: 24px; min-height: 52px; min-width: 200px; }
+  .closing-cta > img {
+    order: 2;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: clamp(240px, 66vw, 380px);
+    object-position: 63% 55%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+  }
 }
