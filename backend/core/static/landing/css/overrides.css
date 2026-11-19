@@ -217,11 +217,6 @@
 .program-card { padding: clamp(22px, 2.4vw, 28px) clamp(18px, 2vw, 24px); }
 .program-card h3 { font-size: clamp(19px, 1.9vw, 21px); }
 
-.closing-cta { min-height: clamp(235px, 20vw, 300px); }
-.closing-cta > img { object-position: 50% 22%; }       /* keep the athlete in the band */
-.closing-content { min-height: clamp(235px, 20vw, 300px); }
-.closing-content h2 { font-size: clamp(26px, 3vw, 42px); }
-
 /* Programs stack below 1024, each card ≤520px and centred */
 @media (max-width: 1023px) {
   .program-grid { grid-template-columns: 1fr; justify-items: center; }
@@ -329,22 +324,6 @@
   }
   .program-card { min-height: 0; padding-bottom: 56px; }
 
-  /* Closing banner: stacked, athlete stays visible above the text */
-  .closing-cta { min-height: clamp(480px, 128vw, 600px); }
-  .closing-cta > img { object-position: 63% 50%; }
-  .closing-cta::after {
-    background: linear-gradient(180deg, #0b122522 0%, #0b122500 28%, #0b1225cc 60%, #0b1225f2 100%);
-  }
-  .closing-content {
-    min-height: clamp(480px, 128vw, 600px);
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    gap: 18px;
-    padding-block: 28px 32px;
-  }
-  .closing-content p { max-width: 34ch; font-size: 14px; }
-
   /* Footer */
   .footer-inner { flex-direction: column; align-items: flex-start; padding-block: 22px; }
 }
@@ -448,8 +427,7 @@
 @media (min-width: 1024px) {
   .site-header .container,
   .hero .container,
-  .pillars .container,
-  .closing-cta .container { width: calc(100% - 2 * clamp(20px, 4vw, 72px)); }
+  .pillars .container { width: calc(100% - 2 * clamp(20px, 4vw, 72px)); }
 
   .site-header .nav {
     min-height: clamp(68px, 5.5vw, 92px);
@@ -801,52 +779,104 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   Closing banner ("Ready to go Higher Within?")
+   Primary buttons — one gradient for every .btn-primary
    ═══════════════════════════════════════════════════════════════════════ */
-.closing-cta {
-  min-height: clamp(340px, 31vw, 580px);                         /* ≈ width ÷ 3.2 */
-  background: #1b1b35;
+:root { --btn-gradient: linear-gradient(90deg, #2ee6f2 0%, #6cb6ff 45%, #b46cf6 100%); }
+.btn-primary {
+  background: var(--btn-gradient);
+  color: #0b1020;
+  font-weight: 700;
+  box-shadow: 0 6px 24px rgba(108, 182, 255, .30);
+  transition: transform .18s, filter .18s, box-shadow .18s;
 }
-.closing-cta > img {
-  object-fit: cover;
-  object-position: 50% 60%;                                      /* full athlete + peak, sky above */
-  filter: brightness(1.15) saturate(1.2);
-}
-/* Lighter overlay: the right half shows the sunset at full brightness */
-.closing-cta::after {
-  background: linear-gradient(90deg, rgba(11, 18, 37, .82) 0%, rgba(11, 18, 37, .55) 30%, rgba(11, 18, 37, 0) 55%);
+.btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 30px rgba(108, 182, 255, .42);
 }
 
-/* Heading + subtitle on the left, button on the right, aligned with the subtitle row */
-.closing-cta .closing-content {
-  min-height: clamp(340px, 31vw, 580px);
+/* ═══════════════════════════════════════════════════════════════════════
+   Closing banner — a contained card with the same edges as the Programs row
+   ═══════════════════════════════════════════════════════════════════════ */
+.closing-cta {
+  min-height: 0;
+  overflow: visible;
+  background: #121323;                                          /* continues the Programs section background */
+  padding: clamp(24px, 3vw, 48px) 0 clamp(40px, 4.4vw, 72px);
+}
+.closing-cta::after { content: none; }                           /* main.css full-bleed overlay is not used any more */
+
+.cta-card {
+  --card-pad: clamp(18px, 2vw, 28px);                            /* = Programs card horizontal padding */
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: #1b1b35;
+  width: 100%;                                                   /* definite width: min-height must not widen the card via the aspect ratio */
+  aspect-ratio: 3.2 / 1;                                         /* ≈ card width ÷ 3.2 */
+  min-height: 300px;
+  container-type: inline-size;                                   /* type scales with the card width */
+}
+.cta-card > img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 60%;
+  filter: brightness(.95) saturate(.8) contrast(1.05);          /* dusky, nothing neon */
+}
+.cta-card::before {                                              /* muted navy-violet tint over the whole image */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(24, 26, 64, .28);
+}
+.cta-card::after {                                               /* left overlay for the text */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(14, 20, 42, .88) 0%, rgba(14, 20, 42, .6) 32%, rgba(14, 20, 42, 0) 58%);
+}
+
+/* Heading + subtitle on the left, button on the right (on the subtitle's row) */
+.cta-card .closing-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  min-height: 0;
+  padding: 0 var(--card-pad);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-rows: auto auto;
   align-content: center;
-  row-gap: 0;                                                    /* main.css sets gap: 24px; the heading-to-subtitle gap is the 16px margin */
-  column-gap: clamp(16px, 2vw, 32px);
   align-items: center;
-  justify-content: stretch;
+  row-gap: 0;
+  column-gap: clamp(16px, 2vw, 32px);
 }
-.closing-cta .closing-content > div { display: contents; }     /* h2 and p become grid items */
-.closing-cta .closing-content h2 {
+.cta-card .closing-content > div { display: contents; }
+.cta-card .closing-content h2 {
   grid-column: 1; grid-row: 1;
   margin: 0;
-  font-size: clamp(34px, 4.2vw, 68px);
+  font-size: clamp(26px, 4.3cqw, 62px);                          /* "Higher Within?" ≈ 31% of the card width */
   font-weight: 700;
   line-height: 1.1;
 }
-.closing-cta .closing-content p {
+.cta-card .closing-content p {
   grid-column: 1; grid-row: 2;
   max-width: none;
   margin: 16px 0 0;
-  font-size: clamp(16px, 1.6vw, 26px);
+  font-size: clamp(14px, 1.64cqw, 24px);
   line-height: 1.4;
   color: #e6e6ef;
 }
-.closing-cta .closing-content .btn {
-  grid-column: 2; grid-row: 2;                                 /* same row as the subtitle, lower than centre */
+.cta-card .closing-content .btn {
+  grid-column: 2; grid-row: 2;
   justify-self: end;
   align-self: center;
   margin-top: 16px;
@@ -854,40 +884,45 @@
   min-width: clamp(200px, 19vw, 300px);
   padding-inline: clamp(24px, 2.4vw, 40px);
   font-size: clamp(15px, 1.3vw, 20px);
-  font-weight: 700;
   white-space: nowrap;
 }
 
 /* Tablet: shift the photo so the athlete stays clear of the button */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .closing-cta > img { object-position: 85% 60%; }
+  .cta-card > img { object-position: 85% 60%; }
 }
 
-/* Mobile <768: text on top, button below, bright photo (athlete visible) underneath */
+/* Mobile <768: card with 16px side margins, text on top, button below, photo underneath */
 @media (max-width: 767px) {
-  .closing-cta {
+  .closing-cta { padding-top: 24px; }
+  .cta-card {
+    --card-pad: 20px;
+    --img-h: clamp(240px, 66vw, 380px);
     display: flex;
     flex-direction: column;
+    aspect-ratio: auto;
     min-height: 420px;
+    border-radius: 14px;
     background: #0d1222;
   }
-  .closing-cta::after { display: none; }
-  .closing-cta .closing-content {
+  .cta-card::after { display: none; }
+  .cta-card::before { inset: auto 0 0 0; height: var(--img-h); }   /* tint only over the photo */
+  .cta-card .closing-content {
+    position: relative;
+    inset: auto;
     order: 1;
-    min-height: 0;
     display: block;
-    padding-block: 40px 24px;
+    padding: 32px var(--card-pad) 24px;
   }
-  .closing-cta .closing-content > div { display: block; }
-  .closing-cta .closing-content h2 { font-size: clamp(34px, 9.5vw, 48px); }
-  .closing-cta .closing-content p { max-width: none; font-size: clamp(16px, 4.2vw, 20px); margin-top: 14px; }
-  .closing-cta .closing-content .btn { margin-top: 24px; min-height: 52px; min-width: 200px; }
-  .closing-cta > img {
+  .cta-card .closing-content > div { display: block; }
+  .cta-card .closing-content h2 { font-size: clamp(30px, 9vw, 44px); }
+  .cta-card .closing-content p { font-size: clamp(16px, 4.2vw, 20px); margin-top: 14px; }
+  .cta-card .closing-content .btn { margin-top: 24px; min-height: 52px; min-width: 200px; }
+  .cta-card > img {
     order: 2;
     position: relative;
     inset: auto;
-    width: 100%;
-    height: clamp(240px, 66vw, 380px);
+    height: var(--img-h);
     object-position: 63% 55%;
     -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
     mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
