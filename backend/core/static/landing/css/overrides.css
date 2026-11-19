@@ -5,13 +5,14 @@
    dots and the photo stay locked together at any size. */
 
 .hero {
+  --hero-h: clamp(420px, 38.9vw, 560px);
   position: relative;
-  min-height: 560px;
+  min-height: var(--hero-h);
   background: radial-gradient(ellipse 85% 95% at 62% 45%, #0a0f24 35%, #0c0d11 100%);
 }
 .hero-grid {
   display: block;
-  min-height: 560px;
+  min-height: var(--hero-h);
   position: relative;
   z-index: 2;
 }
@@ -20,7 +21,7 @@
   z-index: 2;
   max-width: 540px;
   padding: 0;
-  min-height: 560px;
+  min-height: var(--hero-h);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,10 +51,12 @@
 .hero-stage {
   position: absolute;
   right: 0;
-  top: 0;
-  height: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(58vw, 835px);
   aspect-ratio: 1122 / 753;
   isolation: isolate;
+  container-type: inline-size;   /* lets dots/labels scale with the stage (cqw) */
 }
 
 /* Two large, soft glows (box is 160% x 150% of the stage, so no hard edges):
@@ -128,21 +131,22 @@
 }
 .hero-dots .dot i {
   position: absolute;
-  width: 18px;
-  height: 18px;
-  left: -9px;
-  top: -9px;
+  --d: clamp(11px, 2.16cqw, 18px);
+  width: var(--d);
+  height: var(--d);
+  left: calc(var(--d) / -2);
+  top: calc(var(--d) / -2);
   border-radius: 50%;
   background: rgb(var(--dot));
-  box-shadow: 0 0 0 6px rgba(var(--dot), .28), 0 0 18px 4px rgba(var(--dot), .45);
+  box-shadow: 0 0 0 calc(var(--d) / 3) rgba(var(--dot), .28), 0 0 calc(var(--d)) calc(var(--d) / 4.5) rgba(var(--dot), .45);
 }
 .hero-dots .dot span {
   position: absolute;
-  left: 23px;            /* 9px dot radius + 14px gap */
+  left: calc(clamp(11px, 2.16cqw, 18px) / 2 + clamp(8px, 1.68cqw, 14px));  /* dot radius + gap */
   top: 0;
   transform: translateY(-50%);
   color: #fff;
-  font-size: 17px;
+  font-size: clamp(11px, 2.04cqw, 17px);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -152,34 +156,136 @@
 .dot-violet { --dot: 168, 85, 247; }
 .dot-blue   { --dot: 122, 162, 255; }
 
-/* ── Narrower desktops / tablets: stage sized by width, centred vertically ── */
-@media (max-width: 1100px) {
-  .hero-stage {
-    height: auto;
-    width: 62vw;
-    top: 50%;
-    transform: translateY(-50%);
-  }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Responsive pass.
+   ≥1024 desktop · 768–1023 tablet · <768 single column.
+   main.css uses 720/960 breakpoints; every property it changes there is
+   restated here so nothing leaks into the 721–767 range.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.container { width: min(1160px, 100% - clamp(32px, 6vw, 64px)); }
+.section { padding: clamp(40px, 5vw, 55px) 0; }
+.section-title { margin-bottom: clamp(24px, 3vw, 33px); }
+.btn { padding-inline: clamp(18px, 2vw, 23px); }
+
+/* Header ----------------------------------------------------------------- */
+.nav { min-height: clamp(64px, 7vw, 76px); gap: clamp(12px, 2vw, 26px); }
+.navigation { gap: clamp(12px, 2vw, 30px); }
+.navigation a { font-size: clamp(11.5px, 1.05vw, 12.5px); }
+
+/* Hero: ≥1024 uses the base rules above ---------------------------------- */
+
+/* Tablet 768–1023: two columns, text ~48% / athlete ~52% */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero { --hero-h: clamp(380px, 44vw, 450px); }
+  .hero-copy { max-width: 48%; }
+  .hero-description { max-width: 100%; }
+  .hero-subtitle { font-size: clamp(15px, 2vw, 17px); }
+  .hero-stage { width: 52vw; }
+  .program-grid { grid-template-columns: 1fr; }
 }
 
-/* ── Mobile: text on top, art below ──────────────────────────────────── */
-@media (max-width: 720px) {
-  .hero { min-height: 0; }
-  .hero-grid { min-height: 0; }
-  .hero-copy {
-    min-height: 0;
-    max-width: none;
-    padding: 44px 0 0;
+/* Pillars: 3 + 2 on tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pillar-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  .pillar-card {
+    grid-column: span 2;
+    height: clamp(240px, 30vw, 275px);
+    clip-path: polygon(9% 0, 100% 0, 91% 100%, 0 100%);
   }
-  .hero h1 { font-size: clamp(36px, 10.5vw, 48px); }
-  .hero-description { margin-bottom: 24px; }
+  .pillar-card:nth-child(4) { grid-column: 2 / span 2; }
+  .pillar-card:nth-child(5) { grid-column: 4 / span 2; }
+}
 
+/* Journey, pillars, programs, closing, footer: base (≥768 / ≥1024) -------- */
+.journey-grid { grid-template-columns: repeat(4, 1fr); }
+.journey-icon {
+  width: clamp(60px, 7vw, 76px);
+  height: clamp(60px, 7vw, 76px);
+  font-size: clamp(24px, 2.8vw, 30px);
+}
+.journey-track { top: calc(clamp(60px, 7vw, 76px) / 2 - 1.5px); }
+.journey-step h3 { font-size: clamp(15px, 1.7vw, 18px); }
+.journey-step p { font-size: clamp(12px, 1.2vw, 13px); }
+
+.pillar-card { height: clamp(240px, 21vw, 275px); }
+.pillar-content h3 { font-size: clamp(13px, 1.25vw, 14px); }
+
+.program-grid { gap: clamp(12px, 1.6vw, 17px); }
+.program-card { padding: clamp(22px, 2.4vw, 28px) clamp(18px, 2vw, 24px); }
+.program-card h3 { font-size: clamp(19px, 1.9vw, 21px); }
+
+.closing-cta { min-height: clamp(235px, 20vw, 300px); }
+.closing-cta > img { object-position: 50% 22%; }       /* keep the athlete in the band */
+.closing-content { min-height: clamp(235px, 20vw, 300px); }
+.closing-content h2 { font-size: clamp(26px, 3vw, 42px); }
+
+/* Programs stack below 1024, each card ≤520px and centred */
+@media (max-width: 1023px) {
+  .program-grid { grid-template-columns: 1fr; justify-items: center; }
+  .program-card { width: 100%; max-width: 520px; }
+}
+
+/* ═════════ Mobile: <768 ═════════ */
+@media (max-width: 767px) {
+  .btn { min-height: 48px; font-size: 14px; }
+
+  /* Header: logo + ☰, Enquire hidden */
+  .header-cta { display: none; }
+  .menu-toggle {
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-alt);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .navigation {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px clamp(16px, 5vw, 32px) 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .navigation.open { display: flex; }
+  .navigation a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0;
+    font-size: 15px;
+  }
+  .navigation a.active { border-bottom: 0; }
+
+  /* Hero: text first, athlete + arc + bullets below, centred ≤520px */
+  .hero { --hero-h: auto; min-height: 0; }
+  .hero-grid { min-height: 0; }
+  .hero-copy { min-height: 0; max-width: none; padding: clamp(36px, 9vw, 56px) 0 0; }
+  .hero h1 { font-size: clamp(34px, 11.5vw, 56px); }
+  .hero-subtitle { font-size: clamp(15px, 4vw, 17px); }
+  .hero-description { max-width: 46ch; margin-bottom: 24px; }
   .hero-art {
     position: relative;
     inset: auto;
+    overflow: visible;
     width: 100%;
+    max-width: 520px;
     height: auto;
-    margin-top: 12px;
+    margin: clamp(8px, 3vw, 20px) auto 0;
   }
   .hero-stage {
     position: relative;
@@ -187,8 +293,63 @@
     right: auto;
     transform: none;
     width: 100%;
-    height: auto;
   }
-  .hero-dots .dot i { width: 11px; height: 11px; left: -5.5px; top: -5.5px; box-shadow: 0 0 0 3px rgba(var(--dot), .28), 0 0 10px 2px rgba(var(--dot), .45); }
-  .hero-dots .dot span { left: 14px; font-size: 12px; }
+
+  /* Journey: 2 × 2, no connecting line */
+  .journey-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 12px; }
+  .journey-track { display: none; }
+  .journey-step h3 { font-size: 16px; }
+  .journey-step p { font-size: 13px; }
+
+  /* Pillars: 2 per row, last one centred, gentler slant */
+  .pillar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .pillar-card {
+    grid-column: auto;
+    height: clamp(210px, 50vw, 260px);
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+  }
+  .pillar-card:last-child {
+    grid-column: 1 / -1;
+    width: calc(50% - 5px);
+    max-width: none;
+    justify-self: center;
+  }
+  .pillar-content { left: 9%; right: 9%; }
+  .pillar-content h3 { font-size: 14px; }
+
+  /* Programs: 48px tap target for the arrow */
+  .program-card a {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    right: 8px;
+    bottom: 6px;
+  }
+  .program-card { min-height: 0; padding-bottom: 56px; }
+
+  /* Closing banner: stacked, athlete stays visible above the text */
+  .closing-cta { min-height: clamp(480px, 128vw, 600px); }
+  .closing-cta > img { object-position: 63% 50%; }
+  .closing-cta::after {
+    background: linear-gradient(180deg, #0b122522 0%, #0b122500 28%, #0b1225cc 60%, #0b1225f2 100%);
+  }
+  .closing-content {
+    min-height: clamp(480px, 128vw, 600px);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 18px;
+    padding-block: 28px 32px;
+  }
+  .closing-content p { max-width: 34ch; font-size: 14px; }
+
+  /* Footer */
+  .footer-inner { flex-direction: column; align-items: flex-start; padding-block: 22px; }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .container { width: calc(100% - 28px); }
+  .hero-description { font-size: 13.5px; }
 }
