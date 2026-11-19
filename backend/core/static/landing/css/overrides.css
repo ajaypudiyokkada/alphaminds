@@ -651,7 +651,7 @@
 
 /* Icon + title, centred, kept upright. Icon centre sits at 62% of the card height. */
 .pillars .pillar-grid .pillar-content {
-  --ico: clamp(24px, 12.5cqw, 40px);                      /* ≈ 12–13% of the card width */
+  --ico: clamp(29px, 15cqw, 48px);                        /* ≈ 15% of the card width */
   position: absolute;
   left: 0;
   right: 0;
@@ -664,7 +664,7 @@
 .pillars .pillar-icon {
   display: block;
   width: var(--ico);
-  margin: 0 auto 8px;
+  margin: 0 auto 10px;
   color: var(--ic, #fff);
   filter: drop-shadow(0 0 6px rgba(var(--ic-rgb, 255, 255, 255), .6));
 }
@@ -672,7 +672,7 @@
 .pillars .pillar-icon svg * { vector-effect: non-scaling-stroke; }
 .pillars .pillar-content h3 {
   margin: 0;
-  font-size: clamp(13px, 1vw, 16px);
+  font-size: clamp(16px, 1.2vw, 19px);
   font-weight: 500;
   line-height: 1.25;
   color: #fff;
