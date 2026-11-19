@@ -134,20 +134,21 @@
       <div class="container">
         <h2 class="section-title">The AlphaMinds Journey</h2>
         <div class="journey-grid">
-          <!-- One wavy connector behind the circles: S-curve between each pair, flat where it meets a circle -->
-          <svg class="journey-wave" viewBox="0 -50 300 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <!-- One continuous, free-flowing connector from the centre of Assess to the centre of Progress.
+               The opaque circles sit on top and hide the ends, so there are no stubs at their edges. -->
+          <svg class="journey-wave" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true" focusable="false">
             <defs>
-              <linearGradient id="jw-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="300" y2="0">
+              <linearGradient id="jw-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1000" y2="0">
                 <stop offset="0" stop-color="#06c8d4"/>
-                <stop offset=".3333" stop-color="#14b8a6"/>
-                <stop offset=".6667" stop-color="#7c6cf6"/>
+                <stop offset=".333" stop-color="#14b8a6"/>
+                <stop offset=".667" stop-color="#7c6cf6"/>
                 <stop offset="1" stop-color="#b44fe0"/>
               </linearGradient>
-              <filter id="jw-blur" x="-5%" y="-60%" width="110%" height="220%"><feGaussianBlur stdDeviation="1.8 4.6"/></filter>
+              <filter id="jw-blur" x="-5%" y="-150%" width="110%" height="400%"><feGaussianBlur stdDeviation="4"/></filter>
             </defs>
-            <path d="M 0 0 H 25 C 34 29.33 41 29.33 50 0 C 59 -29.33 66 -29.33 75 0 H 100 H 125 C 134 29.33 141 29.33 150 0 C 159 -29.33 166 -29.33 175 0 H 200 H 225 C 234 29.33 241 29.33 250 0 C 259 -29.33 266 -29.33 275 0 H 300" fill="none" stroke="url(#jw-grad)" stroke-width="7" stroke-opacity=".5"
-                  filter="url(#jw-blur)" vector-effect="non-scaling-stroke"/>
-            <path d="M 0 0 H 25 C 34 29.33 41 29.33 50 0 C 59 -29.33 66 -29.33 75 0 H 100 H 125 C 134 29.33 141 29.33 150 0 C 159 -29.33 166 -29.33 175 0 H 200 H 225 C 234 29.33 241 29.33 250 0 C 259 -29.33 266 -29.33 275 0 H 300" fill="none" stroke="url(#jw-grad)" stroke-width="3" stroke-linecap="round"
+            <path d="M0 30 C 60 30, 95 46, 165 44 S 280 27, 333 30 C 390 33, 445 41, 500 38 S 610 23, 667 30 C 720 35, 785 21, 845 24 S 950 35, 1000 30" fill="none" stroke="url(#jw-grad)" stroke-width="6" stroke-opacity=".55"
+                  stroke-linecap="round" filter="url(#jw-blur)" vector-effect="non-scaling-stroke"/>
+            <path d="M0 30 C 60 30, 95 46, 165 44 S 280 27, 333 30 C 390 33, 445 41, 500 38 S 610 23, 667 30 C 720 35, 785 21, 845 24 S 950 35, 1000 30" fill="none" stroke="url(#jw-grad)" stroke-width="2" stroke-linecap="round"
                   vector-effect="non-scaling-stroke"/>
           </svg>
 

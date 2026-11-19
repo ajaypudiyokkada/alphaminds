@@ -515,26 +515,26 @@
   gap: 0;
 }
 
-/* Wavy connector: spans centre of step 1 → centre of step 4 (12.5% → 87.5%),
-   centred on the circles' centre line, behind the circles. The curve is flat
-   where it meets a circle, so it always touches at centre height. */
+/* Connector: one free-flowing path from the centre of step 1 to the centre of
+   step 4 (12.5% → 87.5%), centred on the circles' centre line. The opaque
+   circles sit on top and hide its ends. */
 .journey .journey-wave {
   position: absolute;
   z-index: 0;
-  left: 12.5%;
-  width: 75%;
-  top: calc(var(--D) * -.15);
-  height: calc(var(--D) * 1.3);
+  left: 12.5%;                              /* centre of step 1 … */
+  width: 75%;                               /* … to centre of step 4 */
+  height: calc(var(--D) * .6);              /* 60 viewBox units; max bend ≈ 28% of the circle radius */
+  top: calc(var(--D) * .2);                 /* viewBox y=30 sits exactly on the circle centre (D/2) */
   overflow: visible;
   pointer-events: none;
 }
 
 .journey .journey-step { position: relative; z-index: 1; padding: 0 8px; }
 
-.step-assess   { --c: #06c8d4; --rgb: 6, 200, 212;   --tint: #82e3e9; }
-.step-develop  { --c: #14b8a6; --rgb: 20, 184, 166;  --tint: #89dbd2; }
-.step-apply    { --c: #7c6cf6; --rgb: 124, 108, 246; --tint: #beb5fa; }
-.step-progress { --c: #b44fe0; --rgb: 180, 79, 224;  --tint: #d9a7ef; }
+.step-assess   { --c: #06c8d4; --rgb: 6, 200, 212;   --tint: #b6f7fb; --ring2: #82e3e9; }
+.step-develop  { --c: #14b8a6; --rgb: 20, 184, 166;  --tint: #baf8f1; --ring2: #89dbd2; }
+.step-apply    { --c: #7c6cf6; --rgb: 124, 108, 246; --tint: #bfb7fb; --ring2: #beb5fa; }
+.step-progress { --c: #b44fe0; --rgb: 180, 79, 224;  --tint: #e3bef4; --ring2: #d9a7ef; }
 
 .journey .journey-step .journey-icon {
   width: var(--D);
@@ -549,10 +549,10 @@
   background:
     radial-gradient(circle at 50% 50%, rgba(var(--rgb), .25) 0%, rgba(var(--rgb), 0) 100%) padding-box,
     linear-gradient(#0f1424, #0f1424) padding-box,
-    linear-gradient(135deg, var(--c), var(--tint)) border-box;
+    linear-gradient(135deg, var(--c), var(--ring2)) border-box;
   box-shadow: 0 0 18px rgba(var(--rgb), .45);
 }
-.journey-icon svg { width: 45%; height: 45%; stroke-width: 2px; }
+.journey-icon svg { width: 45%; height: 45%; stroke-width: 2.2px; }
 .journey-icon svg * { vector-effect: non-scaling-stroke; }
 
 .journey .journey-step h3 {
