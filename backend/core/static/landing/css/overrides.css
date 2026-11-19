@@ -447,7 +447,8 @@
    ═══════════════════════════════════════════════════════════════════════ */
 @media (min-width: 1024px) {
   .site-header .container,
-  .hero .container { width: calc(100% - 2 * clamp(20px, 4vw, 72px)); }
+  .hero .container,
+  .pillars .container { width: calc(100% - 2 * clamp(20px, 4vw, 72px)); }
 
   .site-header .nav {
     min-height: clamp(68px, 5.5vw, 92px);
@@ -589,8 +590,11 @@
 .pillars .pillar-grid {
   --sk: 12deg;
   --gap: clamp(8px, 0.8vw, 14px);
-  width: 92%;
-  margin-inline: auto;
+  /* Skew overhang per side = (height × tan(skew)) / 2 = 0.17 × card width (height = 1.6 × width).
+     Padding of that size keeps the skewed cards inside the container, so left and right margins
+     equal the title/header margins. 5 cards, 4 gaps: pad = 0.03185 × (width − 4 gaps). */
+  width: 100%;
+  padding-inline: calc((100% - 4 * var(--gap)) * .03185);
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--gap);
 }
@@ -620,18 +624,18 @@
 .pillars .pillar-grid .pillar-card img {
   position: absolute;
   top: 0;
-  left: -8%;
-  width: 116%;
+  left: -8.5%;
+  width: 117%;
   height: 100%;
   max-width: none;
   object-fit: cover;
-  object-position: 50% 22%;
+  object-position: 50% 0;
   filter: none;
-  transform: skewX(var(--sk)) scale(1.25);
+  transform: skewX(var(--sk)) scale(1.15);
   transform-origin: 50% 0;                                 /* grow downwards so heads are never cropped */
   transition: transform .4s ease;
 }
-.pillars .pillar-grid .pillar-card:hover img { transform: skewX(var(--sk)) scale(1.3125); }   /* 1.25 × 1.05 */
+.pillars .pillar-grid .pillar-card:hover img { transform: skewX(var(--sk)) scale(1.2075); }   /* 1.15 × 1.05 */
 
 /* Saturated overlay over the photo (replaces the old dark ::after overlays): ~35% at the top, ~85% at the bottom */
 .pillars .pillar-grid .pillar-card::after {
@@ -645,31 +649,53 @@
     rgba(var(--g2), .85) 100%);
 }
 
-/* Icon + title, centred in the lower third, kept upright */
+/* Icon + title, centred, kept upright. Icon centre sits at 62% of the card height. */
 .pillars .pillar-grid .pillar-content {
+  --ico: clamp(24px, 12.5cqw, 40px);                      /* ≈ 12–13% of the card width */
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 8%;
+  top: calc(62% - var(--ico) / 2);
   z-index: 2;
   padding-inline: 6%;
   text-align: center;
   transform: skewX(var(--sk));
 }
-.pillars .pillar-icon { display: block; width: clamp(40px, 22cqw, 56px); margin: 0 auto 10px; color: #fff; }
-.pillars .pillar-icon svg { display: block; width: 100%; height: auto; stroke-width: 1.8px; }
+.pillars .pillar-icon {
+  display: block;
+  width: var(--ico);
+  margin: 0 auto 8px;
+  color: var(--ic, #fff);
+  filter: drop-shadow(0 0 6px rgba(var(--ic-rgb, 255, 255, 255), .6));
+}
+.pillars .pillar-icon svg { display: block; width: 100%; height: auto; stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.pillars .pillar-icon svg * { vector-effect: non-scaling-stroke; }
 .pillars .pillar-content h3 {
   margin: 0;
-  font-size: clamp(14px, 1.15vw, 18px);
-  font-weight: 600;
+  font-size: clamp(13px, 1vw, 16px);
+  font-weight: 500;
   line-height: 1.25;
   color: #fff;
-  text-shadow: 0 1px 10px rgba(5, 8, 20, .35);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .45);
 }
+
+/* Per-card icon tint + glow (the brain glows most) */
+.pillars .pillar-personality  { --ic: #bfe9ff; --ic-rgb: 191, 233, 255; }
+.pillars .pillar-cognitive    { --ic: #5eead4; --ic-rgb: 94, 234, 212; }
+.pillars .pillar-cognitive .pillar-icon {
+  filter: drop-shadow(0 0 7px rgba(94, 234, 212, .9)) drop-shadow(0 0 14px rgba(94, 234, 212, .55));
+}
+.pillars .pillar-emotional    { --ic: #e9d5ff; --ic-rgb: 233, 213, 255; }
+.pillars .pillar-adaptability { --ic: #fff1e6; --ic-rgb: 255, 241, 230; }
+.pillars .pillar-social       { --ic: #ddd6fe; --ic-rgb: 221, 214, 254; }
 
 /* Tablet 768–1023: 3 + 2, second row centred */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .pillars .pillar-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  /* 3 per row: pad = 0.05091 × (width − 2 gaps) */
+  .pillars .pillar-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    padding-inline: calc((100% - 2 * var(--gap)) * .05091);
+  }
   .pillars .pillar-grid .pillar-card { grid-column: span 2; }
   .pillars .pillar-grid .pillar-card:nth-child(4) { grid-column: 2 / span 2; }
   .pillars .pillar-grid .pillar-card:nth-child(5) { grid-column: 4 / span 2; }
@@ -677,7 +703,13 @@
 
 /* Mobile <768: 2 per row, last card centred, gentler skew */
 @media (max-width: 767px) {
-  .pillars .pillar-grid { --sk: 6deg; --gap: 10px; width: 94%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* 2 per row, skew 6deg (overhang 0.084 × card width): pad = 0.03878 × (width − 1 gap) */
+  .pillars .pillar-grid {
+    --sk: 6deg;
+    --gap: 10px;
+    padding-inline: calc((100% - var(--gap)) * .03878);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .pillars .pillar-grid .pillar-card { grid-column: auto; }
   .pillars .pillar-grid .pillar-card:last-child {
     grid-column: 1 / -1;
