@@ -115,6 +115,8 @@
 }
 .hero-arc .arc-top { opacity: .9; }
 .hero-dots {
+  --lf: clamp(11px, 2cqw, 24px);                 /* label font; cqw = stage width */
+  --gap: clamp(8px, 1.6cqw, 24px);
   position: absolute;
   inset: 0;
   z-index: 4;
@@ -131,22 +133,21 @@
 }
 .hero-dots .dot i {
   position: absolute;
-  --d: clamp(11px, 2.16cqw, 18px);
-  width: var(--d);
-  height: var(--d);
-  left: calc(var(--d) / -2);
-  top: calc(var(--d) / -2);
+  width: calc(var(--lf) * 1.2);
+  height: calc(var(--lf) * 1.2);
+  left: calc(var(--lf) * -.6);
+  top: calc(var(--lf) * -.6);
   border-radius: 50%;
   background: rgb(var(--dot));
-  box-shadow: 0 0 0 calc(var(--d) / 3) rgba(var(--dot), .28), 0 0 calc(var(--d)) calc(var(--d) / 4.5) rgba(var(--dot), .45);
+  box-shadow: 0 0 6px rgba(var(--dot), .5);      /* very subtle glow, no halo ring */
 }
 .hero-dots .dot span {
   position: absolute;
-  left: calc(clamp(11px, 2.16cqw, 18px) / 2 + clamp(8px, 1.68cqw, 14px));  /* dot radius + gap */
+  left: calc(var(--lf) * .6 + var(--gap));       /* dot radius + gap */
   top: 0;
   transform: translateY(-50%);
   color: #fff;
-  font-size: clamp(11px, 2.04cqw, 17px);
+  font-size: var(--lf);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -355,19 +356,34 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   Desktop (≥1024) — mockup proportions.
-   Hero height ≈ width ÷ 1.9. The stage is as tall as the hero and is
-   anchored from the LEFT so the athlete's nose lands just after the end of
-   the headline (--nose-x), whatever the width. Tablet/mobile keep the rules
-   above and only inherit the new (taller) crop.
+   Desktop (≥1024) — aligned to the header container.
+   - Hero text starts at the logo's left edge (same .container).
+   - The longest arc label ends at the container's right edge (= right edge of
+     the Enquire Now button), so left and right padding are equal.
+   - Athlete + arc + labels are ONE unit (the stage): its width --W is solved
+     from the container width and the headline width, then clamped; the hero
+     height follows the stage. Nothing inside the stage is sized separately,
+     so dots stay on the arc.
+   main is the size container, so cqw here = the page width (no scrollbar skew).
    ═══════════════════════════════════════════════════════════════════════ */
 @media (min-width: 1024px) {
+  main { container-type: inline-size; }
+
   .hero {
-    --hero-h: clamp(560px, 52vw, 820px);
-    --h1: clamp(52px, 6.6vw, 104px);
-    --stage-w: calc(var(--hero-h) * 1122 / 880);               /* stage = crop aspect */
-    --cont-left: calc((100% - min(1160px, 100% - clamp(32px, 6vw, 64px))) / 2);
-    --nose-x: calc(var(--cont-left) + var(--h1) * 6.9 + 2.5%);   /* headline end + 2.5% */
+    --C: min(1160px, 100cqw - clamp(32px, 6vw, 64px));       /* header container width */
+    --cl: calc((100cqw - var(--C)) / 2);                       /* container left edge   */
+    --cr: calc(100cqw - var(--cl));                            /* container right edge  */
+    --h1w: 6.9;                                                /* headline width in em  */
+    --rho: .7684;                                               /* right end of longest label, as a fraction of --W, from stage left */
+    --nose: .169;                                              /* nose tip, fraction of --W from stage left */
+    --h1-base: clamp(48px, 6vw, 96px);
+    /* stage width that puts the nose just after the headline, within sane bounds */
+    --W-fit: calc((var(--C) - var(--h1-base) * var(--h1w) - 2.5cqw) / (var(--rho) - var(--nose)));
+    --W: clamp(var(--C) * .74, var(--W-fit), var(--C) * .80);
+    /* never let the headline run into the face */
+    --h1: min(var(--h1-base), (var(--C) - var(--W) * (var(--rho) - var(--nose)) - 2cqw) / var(--h1w));
+
+    --hero-h: calc(var(--W) * 880 / 1122);
     height: var(--hero-h);
     min-height: var(--hero-h);
   }
@@ -378,22 +394,29 @@
     right: auto;
     transform: none;
     height: 100%;
-    width: var(--stage-w);
-    /* nose tip sits at ~17% of the stage width (source x≈190 of 1122) */
-    left: calc(var(--nose-x) - var(--stage-w) * 0.169);
+    width: var(--W);
+    left: calc(var(--cr) - var(--W) * var(--rho));
   }
 
-  /* Text block, centred on the athlete's face (≈38% of the hero height) */
+  /* Text block, centred on the athlete's face (nose ≈ 37% of the stage height) */
   .hero-copy {
     max-width: none;
     min-height: var(--hero-h);
     height: 100%;
     padding-bottom: calc(var(--hero-h) * .25);
   }
-  .eyebrow { font-size: clamp(13px, 1.1vw, 17px); margin: 0; }
+  .eyebrow {
+    margin: 0 0 calc(var(--h1) * .35);
+    color: #06c8d4;
+    font-weight: 700;
+    letter-spacing: .16em;
+    font-size: calc(var(--h1) * var(--eyebrow-k, .248));       /* ≈ 85–90% of the headline width */
+    line-height: 1.2;
+    white-space: nowrap;
+  }
   .hero h1 {
     font-size: var(--h1);
-    margin: clamp(10px, 1.3vw, 20px) 0 clamp(8px, 1vw, 16px);
+    margin: 0 0 clamp(8px, 1vw, 16px);
   }
   .hero-subtitle { font-size: clamp(18px, 1.9vw, 30px); margin: 0 0 clamp(12px, 1.5vw, 24px); }
   .hero-description {
