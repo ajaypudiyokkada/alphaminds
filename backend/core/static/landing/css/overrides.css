@@ -718,3 +718,85 @@
     justify-self: center;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Programs
+   ═══════════════════════════════════════════════════════════════════════ */
+.programs .program-grid { gap: clamp(16px, 1.6vw, 24px); }
+
+.programs .program-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;                              /* content vertically centred */
+  min-height: clamp(220px, 19vw, 300px);
+  padding: clamp(24px, 2.4vw, 36px) clamp(18px, 2vw, 28px);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 16px;
+  background: linear-gradient(160deg, #1b2236, #121828);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);    /* subtle glass edge */
+  text-align: center;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.programs .program-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, .18);
+}
+
+.programs .program-card.elite {
+  border: 1.5px solid #a855f7;
+  background: linear-gradient(160deg, #2a1f4d, #1a1734);
+  box-shadow: 0 0 24px rgba(168, 85, 247, .35), inset 0 0 0 1px rgba(168, 85, 247, .25);
+}
+.programs .program-card.elite:hover {
+  border-color: #c084fc;
+  box-shadow: 0 0 38px rgba(168, 85, 247, .55), inset 0 0 0 1px rgba(168, 85, 247, .35);
+}
+
+/* Icons: coloured line icons with a soft glow */
+.programs .program-icon {
+  --pc: 34, 211, 238;
+  width: clamp(36px, 3vw, 48px);
+  height: clamp(36px, 3vw, 48px);
+  margin: 0;
+  display: block;
+  color: rgb(var(--pc));
+  filter: drop-shadow(0 0 8px rgba(var(--pc), .5));
+}
+.programs .program-card:nth-child(2) .program-icon { --pc: 96, 165, 250; }     /* blue   #60a5fa */
+.programs .program-card.elite .program-icon,
+.programs .program-card.elite:hover .program-icon { --pc: 167, 139, 250; }     /* violet #a78bfa */
+.programs .program-icon svg { display: block; width: 100%; height: 100%; stroke-width: 1.8px; }
+.programs .program-icon svg * { vector-effect: non-scaling-stroke; }
+
+.programs .program-card h3 {
+  margin: 10px 0 0;
+  font-size: clamp(20px, 1.8vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+.programs .program-card p {
+  max-width: 75%;
+  margin: clamp(8px, .8vw, 12px) auto 0;
+  font-size: clamp(14px, 1.15vw, 18px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #c9cad6;
+}
+
+/* Arrow, bottom-right */
+.programs .program-card a {
+  right: clamp(14px, 1.4vw, 20px);
+  bottom: clamp(10px, 1vw, 16px);
+  font-size: clamp(18px, 1.4vw, 22px);
+  line-height: 1;
+  color: #fff;
+}
+@media (max-width: 767px) {
+  .programs .program-card a { right: 8px; bottom: 6px; }   /* keeps the 48px tap area from the mobile rules */
+  .programs .program-card { padding-bottom: 56px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .programs .program-card a { display: grid; place-items: center; width: 44px; height: 44px; right: 8px; bottom: 6px; }
+}
