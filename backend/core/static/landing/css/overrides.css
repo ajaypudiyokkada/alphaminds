@@ -1,6 +1,6 @@
 /* Hero rework. Loaded after main.css; main.css is left untouched.
    The hero art lives in a "stage" whose aspect ratio equals the visible crop of
-   hero-athlete.webp (source px: x 0-1122, y 100-853). The SVG layers use that
+   hero-athlete.webp (source px: x 0-1122, y 100-980: head, shoulders, top of the vest). The SVG layers use that
    same coordinate space, and the dots are positioned from it, so the arc, the
    dots and the photo stay locked together at any size. */
 
@@ -54,7 +54,7 @@
   top: 50%;
   transform: translateY(-50%);
   width: min(58vw, 835px);
-  aspect-ratio: 1122 / 753;
+  aspect-ratio: 1122 / 880;
   isolation: isolate;
   container-type: inline-size;   /* lets dots/labels scale with the stage (cqw) */
 }
@@ -65,9 +65,9 @@
   position: absolute;
   inset: -25% -30% -25% -30%;
   background:
-    radial-gradient(ellipse 31% 53% at 35.6% 46%,
+    radial-gradient(ellipse 31% 50% at 35.4% 41.7%,
       rgba(10, 165, 192, .40) 0%, rgba(10, 165, 192, .18) 40%, rgba(10, 165, 192, 0) 70%),
-    radial-gradient(ellipse 24% 43% at 51.3% 52.7%,
+    radial-gradient(ellipse 24% 41% at 49.9% 48.5%,
       rgba(124, 58, 237, .35) 0%, rgba(124, 58, 237, .16) 42%, rgba(124, 58, 237, 0) 70%);
   z-index: 0;
 }
@@ -89,20 +89,20 @@
   z-index: 2;
   mix-blend-mode: lighten;
   -webkit-mask-image:
-    radial-gradient(ellipse 50% 58% at 46% 44%, #000 52%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 12%, #000 78%, transparent 100%),
-    linear-gradient(to right, transparent 0, #000 18%, #000 82%, transparent 100%);
+    radial-gradient(ellipse 64% 72% at 44% 44%, #000 58%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 84%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image:
-    radial-gradient(ellipse 50% 58% at 46% 44%, #000 52%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 12%, #000 78%, transparent 100%),
-    linear-gradient(to right, transparent 0, #000 18%, #000 82%, transparent 100%);
+    radial-gradient(ellipse 64% 72% at 44% 44%, #000 58%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 84%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
   mask-composite: intersect;
 }
 .hero-photo img {
   position: absolute;
   left: 0;
-  top: calc(-100 / 753 * 100%);
+  top: calc(-100 / 880 * 100%);
   width: 100%;
   height: auto;
   max-width: none;
@@ -125,7 +125,7 @@
 .hero-dots .dot {
   position: absolute;
   left: calc(var(--x) / 1122 * 100%);
-  top: calc((var(--y) - 100) / 753 * 100%);
+  top: calc((var(--y) - 100) / 880 * 100%);
   width: 0;
   height: 0;
 }
@@ -352,4 +352,67 @@
 @media (max-width: 380px) {
   .container { width: calc(100% - 28px); }
   .hero-description { font-size: 13.5px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Desktop (≥1024) — mockup proportions.
+   Hero height ≈ width ÷ 1.9. The stage is as tall as the hero and is
+   anchored from the LEFT so the athlete's nose lands just after the end of
+   the headline (--nose-x), whatever the width. Tablet/mobile keep the rules
+   above and only inherit the new (taller) crop.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .hero {
+    --hero-h: clamp(560px, 52vw, 820px);
+    --h1: clamp(52px, 6.6vw, 104px);
+    --stage-w: calc(var(--hero-h) * 1122 / 880);               /* stage = crop aspect */
+    --cont-left: calc((100% - min(1160px, 100% - clamp(32px, 6vw, 64px))) / 2);
+    --nose-x: calc(var(--cont-left) + var(--h1) * 6.9 + 2.5%);   /* headline end + 2.5% */
+    height: var(--hero-h);
+    min-height: var(--hero-h);
+  }
+  .hero-grid { min-height: 0; height: 100%; }
+
+  .hero-stage {
+    top: 0;
+    right: auto;
+    transform: none;
+    height: 100%;
+    width: var(--stage-w);
+    /* nose tip sits at ~17% of the stage width (source x≈190 of 1122) */
+    left: calc(var(--nose-x) - var(--stage-w) * 0.169);
+  }
+
+  /* Text block, centred on the athlete's face (≈38% of the hero height) */
+  .hero-copy {
+    max-width: none;
+    min-height: var(--hero-h);
+    height: 100%;
+    padding-bottom: calc(var(--hero-h) * .25);
+  }
+  .eyebrow { font-size: clamp(13px, 1.1vw, 17px); margin: 0; }
+  .hero h1 {
+    font-size: var(--h1);
+    margin: clamp(10px, 1.3vw, 20px) 0 clamp(8px, 1vw, 16px);
+  }
+  .hero-subtitle { font-size: clamp(18px, 1.9vw, 30px); margin: 0 0 clamp(12px, 1.5vw, 24px); }
+  .hero-description {
+    font-size: clamp(15px, 1.4vw, 22px);
+    max-width: min(600px, 41vw);
+    margin: 0 0 clamp(20px, 2.4vw, 40px);
+  }
+  .hero-copy .btn {
+    min-height: clamp(52px, 4.4vw, 68px);
+    min-width: clamp(220px, 23vw, 360px);
+    font-size: clamp(15px, 1.25vw, 19px);
+    padding-inline: clamp(24px, 2.4vw, 36px);
+  }
+}
+
+/* Tablet/mobile: fade the swirl layer out at the stage's left edge so it can't run into the text. */
+@media (max-width: 1023px) {
+  .hero-fx {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%);
+    mask-image: linear-gradient(to right, transparent 0, #000 16%);
+  }
 }
