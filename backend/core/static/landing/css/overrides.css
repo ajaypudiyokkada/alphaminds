@@ -580,3 +580,109 @@
   }
   .journey .journey-wave { display: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Five Pillars — skewed cards (all four corners rounded), saturated overlays
+   ═══════════════════════════════════════════════════════════════════════ */
+.pillars { background: linear-gradient(180deg, #0f1526 0%, #0c0d11 100%); }
+
+.pillars .pillar-grid {
+  --sk: 12deg;
+  --gap: clamp(8px, 0.8vw, 14px);
+  width: 92%;
+  margin-inline: auto;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.pillars .pillar-grid .pillar-card {
+  position: relative;
+  height: auto;
+  aspect-ratio: 1 / 1.6;                                   /* taller and narrower */
+  clip-path: none;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #13141c;
+  transform: skewX(calc(var(--sk) * -1));
+  transition: transform .3s ease;
+  container-type: inline-size;                             /* icon size follows card width */
+  --g1: 30, 127, 216;  --g2: 10, 165, 192;
+}
+.pillars .pillar-grid .pillar-card:hover { transform: translateY(-4px) skewX(calc(var(--sk) * -1)); }
+
+.pillars .pillar-card.pillar-personality  { --g1: 30, 127, 216;  --g2: 10, 165, 192; }
+.pillars .pillar-card.pillar-cognitive    { --g1: 15, 158, 142;  --g2: 20, 184, 166; }
+.pillars .pillar-card.pillar-emotional    { --g1: 124, 58, 237;  --g2: 167, 139, 250; }
+.pillars .pillar-card.pillar-adaptability { --g1: 240, 138, 75;  --g2: 245, 158, 107; }
+.pillars .pillar-card.pillar-social       { --g1: 109, 75, 220;  --g2: 139, 92, 246; }
+
+/* Photo: counter-skewed so it stays upright, scaled/widened so it fills the slanted shape. */
+.pillars .pillar-grid .pillar-card img {
+  position: absolute;
+  top: 0;
+  left: -8%;
+  width: 116%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 22%;
+  filter: none;
+  transform: skewX(var(--sk)) scale(1.25);
+  transform-origin: 50% 0;                                 /* grow downwards so heads are never cropped */
+  transition: transform .4s ease;
+}
+.pillars .pillar-grid .pillar-card:hover img { transform: skewX(var(--sk)) scale(1.3125); }   /* 1.25 × 1.05 */
+
+/* Saturated overlay over the photo (replaces the old dark ::after overlays): ~35% at the top, ~85% at the bottom */
+.pillars .pillar-grid .pillar-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(var(--g1), .35) 0%,
+    rgba(var(--g1), .42) 40%,
+    rgba(var(--g2), .85) 100%);
+}
+
+/* Icon + title, centred in the lower third, kept upright */
+.pillars .pillar-grid .pillar-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8%;
+  z-index: 2;
+  padding-inline: 6%;
+  text-align: center;
+  transform: skewX(var(--sk));
+}
+.pillars .pillar-icon { display: block; width: clamp(40px, 22cqw, 56px); margin: 0 auto 10px; color: #fff; }
+.pillars .pillar-icon svg { display: block; width: 100%; height: auto; stroke-width: 1.8px; }
+.pillars .pillar-content h3 {
+  margin: 0;
+  font-size: clamp(14px, 1.15vw, 18px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(5, 8, 20, .35);
+}
+
+/* Tablet 768–1023: 3 + 2, second row centred */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pillars .pillar-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .pillars .pillar-grid .pillar-card { grid-column: span 2; }
+  .pillars .pillar-grid .pillar-card:nth-child(4) { grid-column: 2 / span 2; }
+  .pillars .pillar-grid .pillar-card:nth-child(5) { grid-column: 4 / span 2; }
+}
+
+/* Mobile <768: 2 per row, last card centred, gentler skew */
+@media (max-width: 767px) {
+  .pillars .pillar-grid { --sk: 6deg; --gap: 10px; width: 94%; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pillars .pillar-grid .pillar-card { grid-column: auto; }
+  .pillars .pillar-grid .pillar-card:last-child {
+    grid-column: 1 / -1;
+    width: calc(50% - 5px);
+    max-width: none;
+    justify-self: center;
+  }
+}
