@@ -7,6 +7,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False),
     ALLOWED_HOSTS=(list, []),
+    CSRF_TRUSTED_ORIGINS=(list, []),
+    SECURE_COOKIES=(bool, None),
+    SECURE_SSL_REDIRECT=(bool, False),
     DB_ENGINE=(str, 'django.db.backends.mysql'),
     DB_HOST=(str, '127.0.0.1'),
     DB_PORT=(str, '3306'),
@@ -20,6 +23,17 @@ environ.Env.read_env(BASE_DIR / '.env')
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS')  # e.g. https://app.example.com
+
+# ── HTTPS / reverse proxy (production) ────────────────────────────────────────
+# nginx terminates TLS and forwards X-Forwarded-Proto. Cookies are Secure whenever
+# DEBUG is off; set SECURE_COOKIES=False only to test a DEBUG=False build over plain http.
+_secure = env('SECURE_COOKIES') if env('SECURE_COOKIES') is not None else not DEBUG
+SESSION_COOKIE_SECURE = _secure
+CSRF_COOKIE_SECURE = _secure
+if _secure:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT')  # nginx already redirects 80 -> 443
 
 INSTALLED_APPS = [
     'django.contrib.admin',
