@@ -21,3 +21,6 @@ web-build/
 # Local DB exports
 backup/
 staticfiles/
+
+# local design review screenshots
+backend/design/screenshots/

@@ -1,0 +1,948 @@
+/* Hero rework. Loaded after main.css; main.css is left untouched.
+   The hero art lives in a "stage" whose aspect ratio equals the visible crop of
+   hero-athlete.webp (source px: x 0-1122, y 100-980: head, shoulders, top of the vest). The SVG layers use that
+   same coordinate space, and the dots are positioned from it, so the arc, the
+   dots and the photo stay locked together at any size. */
+
+.hero {
+  --hero-h: clamp(420px, 38.9vw, 560px);
+  position: relative;
+  min-height: var(--hero-h);
+  background: radial-gradient(ellipse 85% 95% at 62% 45%, #0a0f24 35%, #0c0d11 100%);
+}
+.hero-grid {
+  display: block;
+  min-height: var(--hero-h);
+  position: relative;
+  z-index: 2;
+}
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 540px;
+  padding: 0;
+  min-height: var(--hero-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero h1 {
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  white-space: nowrap;
+  margin: 18px 0 12px;
+}
+.hero h1 .gradient-text { padding-right: .1em; }
+.hero-copy .btn { align-self: flex-start; }
+.hero-subtitle { font-size: 17px; margin: 0 0 20px; }
+.hero-description { font-size: 14px; max-width: 380px; margin: 0 0 28px; }
+
+/* ── Art ─────────────────────────────────────────────────────────────── */
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-stage {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(58vw, 835px);
+  aspect-ratio: 1122 / 880;
+  isolation: isolate;
+  container-type: inline-size;   /* lets dots/labels scale with the stage (cqw) */
+}
+
+/* Two large, soft glows (box is 160% x 150% of the stage, so no hard edges):
+   teal-cyan behind the face (left/front), violet behind the back of the head. */
+.hero-glow {
+  position: absolute;
+  inset: -25% -30% -25% -30%;
+  background:
+    radial-gradient(ellipse 31% 50% at 35.4% 41.7%,
+      rgba(10, 165, 192, .40) 0%, rgba(10, 165, 192, .18) 40%, rgba(10, 165, 192, 0) 70%),
+    radial-gradient(ellipse 24% 41% at 49.9% 48.5%,
+      rgba(124, 58, 237, .35) 0%, rgba(124, 58, 237, .16) 42%, rgba(124, 58, 237, 0) 70%);
+  z-index: 0;
+}
+
+.hero-fx, .hero-arc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.hero-fx { z-index: 1; }
+
+/* Photo: faded on all four sides so it melts into the background. The dark
+   photo background is "lightened" against the glow so the streaks show through. */
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  mix-blend-mode: lighten;
+  -webkit-mask-image:
+    radial-gradient(ellipse 64% 72% at 44% 44%, #000 58%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 84%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 64% 72% at 44% 44%, #000 58%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 9%, #000 84%, transparent 100%),
+    linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-composite: intersect;
+}
+.hero-photo img {
+  position: absolute;
+  left: 0;
+  top: calc(-100 / 880 * 100%);
+  width: 100%;
+  height: auto;
+  max-width: none;
+}
+
+/* Arc + dots */
+.hero-arc { z-index: 3; }
+.hero-arc .arc-main {
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, .6)) drop-shadow(0 0 14px rgba(6, 200, 212, .35));
+}
+.hero-arc .arc-top { opacity: .9; }
+.hero-dots {
+  --lf: clamp(11px, 2cqw, 26px);                 /* label font; cqw = stage width */
+  --gap: clamp(8px, 1.6cqw, 24px);
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-dots .dot {
+  position: absolute;
+  left: calc(var(--x) / 1122 * 100%);
+  top: calc((var(--y) - 100) / 880 * 100%);
+  width: 0;
+  height: 0;
+}
+.hero-dots .dot i {
+  position: absolute;
+  width: calc(var(--lf) * 1.2);
+  height: calc(var(--lf) * 1.2);
+  left: calc(var(--lf) * -.6);
+  top: calc(var(--lf) * -.6);
+  border-radius: 50%;
+  background: rgb(var(--dot));
+  box-shadow: 0 0 6px rgba(var(--dot), .5);      /* very subtle glow, no halo ring */
+}
+.hero-dots .dot span {
+  position: absolute;
+  left: calc(var(--lf) * .6 + var(--gap));       /* dot radius + gap */
+  top: 0;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: var(--lf);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 1px 8px rgba(5, 8, 20, .85);
+}
+.dot-cyan   { --dot: 6, 200, 212; }
+.dot-violet { --dot: 168, 85, 247; }
+.dot-blue   { --dot: 122, 162, 255; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Responsive pass.
+   ≥1024 desktop · 768–1023 tablet · <768 single column.
+   main.css uses 720/960 breakpoints; every property it changes there is
+   restated here so nothing leaks into the 721–767 range.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.container { width: min(1160px, 100% - clamp(32px, 6vw, 64px)); }
+.section { padding: clamp(40px, 5vw, 55px) 0; }
+.section-title { margin-bottom: clamp(24px, 3vw, 33px); }
+.btn { padding-inline: clamp(18px, 2vw, 23px); }
+
+/* Header ----------------------------------------------------------------- */
+.nav { min-height: clamp(64px, 7vw, 76px); gap: clamp(12px, 2vw, 26px); }
+.navigation { gap: clamp(12px, 2vw, 30px); }
+.navigation a { font-size: clamp(11.5px, 1.05vw, 12.5px); }
+
+/* Hero: ≥1024 uses the base rules above ---------------------------------- */
+
+/* Tablet 768–1023: two columns, text ~48% / athlete ~52% */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero { --hero-h: clamp(380px, 44vw, 450px); }
+  .hero-copy { max-width: 48%; }
+  .hero-description { max-width: 100%; }
+  .hero-subtitle { font-size: clamp(15px, 2vw, 17px); }
+  .hero-stage { width: 52vw; }
+  .program-grid { grid-template-columns: 1fr; }
+}
+
+/* Pillars: 3 + 2 on tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pillar-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  .pillar-card {
+    grid-column: span 2;
+    height: clamp(240px, 30vw, 275px);
+    clip-path: polygon(9% 0, 100% 0, 91% 100%, 0 100%);
+  }
+  .pillar-card:nth-child(4) { grid-column: 2 / span 2; }
+  .pillar-card:nth-child(5) { grid-column: 4 / span 2; }
+}
+
+/* Journey, pillars, programs, closing, footer: base (≥768 / ≥1024) -------- */
+.journey-grid { grid-template-columns: repeat(4, 1fr); }
+.journey-icon {
+  width: clamp(60px, 7vw, 76px);
+  height: clamp(60px, 7vw, 76px);
+  font-size: clamp(24px, 2.8vw, 30px);
+}
+.journey-track { top: calc(clamp(60px, 7vw, 76px) / 2 - 1.5px); }
+.journey-step h3 { font-size: clamp(15px, 1.7vw, 18px); }
+.journey-step p { font-size: clamp(12px, 1.2vw, 13px); }
+
+.pillar-card { height: clamp(240px, 21vw, 275px); }
+.pillar-content h3 { font-size: clamp(13px, 1.25vw, 14px); }
+
+.program-grid { gap: clamp(12px, 1.6vw, 17px); }
+.program-card { padding: clamp(22px, 2.4vw, 28px) clamp(18px, 2vw, 24px); }
+.program-card h3 { font-size: clamp(19px, 1.9vw, 21px); }
+
+/* Programs stack below 1024, each card ≤520px and centred */
+@media (max-width: 1023px) {
+  .program-grid { grid-template-columns: 1fr; justify-items: center; }
+  .program-card { width: 100%; max-width: 520px; }
+}
+
+/* ═════════ Mobile: <768 ═════════ */
+@media (max-width: 767px) {
+  .btn { min-height: 48px; font-size: 14px; }
+
+  /* Header: logo + ☰, Enquire hidden */
+  .header-cta { display: none; }
+  .menu-toggle {
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-alt);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .navigation {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 8px clamp(16px, 5vw, 32px) 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .navigation.open { display: flex; }
+  .navigation a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0;
+    font-size: 15px;
+  }
+  .navigation a.active { border-bottom: 0; }
+
+  /* Hero: text first, athlete + arc + bullets below, centred ≤520px */
+  .hero { --hero-h: auto; min-height: 0; }
+  .hero-grid { min-height: 0; }
+  .hero-copy { min-height: 0; max-width: none; padding: clamp(36px, 9vw, 56px) 0 0; }
+  .hero h1 { font-size: clamp(34px, 11.5vw, 56px); }
+  .hero-subtitle { font-size: clamp(15px, 4vw, 17px); }
+  .hero-description { max-width: 46ch; margin-bottom: 24px; }
+  .hero-art {
+    position: relative;
+    inset: auto;
+    overflow: visible;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    margin: clamp(8px, 3vw, 20px) auto 0;
+  }
+  .hero-stage {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+  }
+
+  /* Journey: 2 × 2, no connecting line */
+  .journey-grid { grid-template-columns: repeat(2, 1fr); gap: 28px 12px; }
+  .journey-track { display: none; }
+  .journey-step h3 { font-size: 16px; }
+  .journey-step p { font-size: 13px; }
+
+  /* Pillars: 2 per row, last one centred, gentler slant */
+  .pillar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .pillar-card {
+    grid-column: auto;
+    height: clamp(210px, 50vw, 260px);
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+  }
+  .pillar-card:last-child {
+    grid-column: 1 / -1;
+    width: calc(50% - 5px);
+    max-width: none;
+    justify-self: center;
+  }
+  .pillar-content { left: 9%; right: 9%; }
+  .pillar-content h3 { font-size: 14px; }
+
+  /* Programs: 48px tap target for the arrow */
+  .program-card a {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    right: 8px;
+    bottom: 6px;
+  }
+  .program-card { min-height: 0; padding-bottom: 56px; }
+
+  /* Footer */
+  .footer-inner { flex-direction: column; align-items: flex-start; padding-block: 22px; }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .container { width: calc(100% - 28px); }
+  .hero-description { font-size: 13.5px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Desktop (≥1024) — aligned to the header container.
+   - Hero text starts at the logo's left edge (same .container).
+   - The longest arc label ends at the container's right edge (= right edge of
+     the Enquire Now button), so left and right padding are equal.
+   - Athlete + arc + labels are ONE unit (the stage): its width --W is solved
+     from the container width and the headline width, then clamped; the hero
+     height follows the stage. Nothing inside the stage is sized separately,
+     so dots stay on the arc.
+   main is the size container, so cqw here = the page width (no scrollbar skew).
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  main { container-type: inline-size; }
+
+  .hero {
+    --C: calc(100cqw - 2 * clamp(20px, 4vw, 72px));          /* header/hero container width */
+    --cl: calc((100cqw - var(--C)) / 2);                       /* container left edge   */
+    --cr: calc(100cqw - var(--cl));                            /* container right edge  */
+    --h1w: 6.9;                                                /* headline width in em  */
+    --rho: .7684;                                               /* right end of longest label, as a fraction of --W, from stage left */
+    --nose: .169;                                              /* nose tip, fraction of --W from stage left */
+    --h1-base: clamp(48px, 6vw, 96px);
+    /* stage width that puts the nose just after the headline, within sane bounds */
+    --W-fit: calc((var(--C) - var(--h1-base) * var(--h1w) - 2.5cqw) / (var(--rho) - var(--nose)));
+    --W: min(clamp(var(--C) * .70, var(--W-fit), var(--C) * .85),
+             clamp(560px, 56vw, 1000px) * 1122 / 880);          /* hero height ≤ ~width ÷ 1.8 */
+    /* never let the headline run into the face */
+    --h1: min(var(--h1-base), (var(--C) - var(--W) * (var(--rho) - var(--nose)) - 2cqw) / var(--h1w));
+
+    --hero-h: calc(var(--W) * 880 / 1122);
+    height: var(--hero-h);
+    min-height: var(--hero-h);
+  }
+  .hero-grid { min-height: 0; height: 100%; }
+
+  .hero-stage {
+    top: 0;
+    right: auto;
+    transform: none;
+    height: 100%;
+    width: var(--W);
+    left: calc(var(--cr) - var(--W) * var(--rho));
+  }
+
+  /* Text block, centred on the athlete's face (nose ≈ 37% of the stage height) */
+  .hero-copy {
+    max-width: none;
+    min-height: var(--hero-h);
+    height: 100%;
+    padding-bottom: calc(var(--hero-h) * .25);
+  }
+  .eyebrow {
+    margin: 0 0 calc(var(--h1) * .35);
+    color: #06c8d4;
+    font-weight: 700;
+    letter-spacing: .16em;
+    font-size: calc(var(--h1) * var(--eyebrow-k, .248));       /* ≈ 85–90% of the headline width */
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .hero h1 {
+    font-size: var(--h1);
+    margin: 0 0 clamp(8px, 1vw, 16px);
+  }
+  .hero-subtitle { font-size: clamp(18px, 1.9vw, 30px); margin: 0 0 clamp(12px, 1.5vw, 24px); }
+  .hero-description {
+    font-size: clamp(15px, 1.4vw, 22px);
+    max-width: min(600px, 41vw);
+    margin: 0 0 clamp(20px, 2.4vw, 40px);
+  }
+  .hero-copy .btn {
+    min-height: clamp(52px, 4.4vw, 68px);
+    min-width: clamp(220px, 23vw, 360px);
+    font-size: clamp(15px, 1.25vw, 19px);
+    padding-inline: clamp(24px, 2.4vw, 36px);
+  }
+}
+
+/* Tablet/mobile: fade the swirl layer out at the stage's left edge so it can't run into the text. */
+@media (max-width: 1023px) {
+  .hero-fx {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%);
+    mask-image: linear-gradient(to right, transparent 0, #000 16%);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Header, desktop (≥1024): same container as the hero (~4% side padding),
+   bigger menu, text-only Enquire button, taller bar, larger temporary logo.
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .site-header .container,
+  .hero .container,
+  .pillars .container { width: calc(100% - 2 * clamp(20px, 4vw, 72px)); }
+
+  .site-header .nav {
+    min-height: clamp(68px, 5.5vw, 92px);
+    gap: clamp(18px, 2.4vw, 44px);
+    align-items: center;
+  }
+  .site-header .navigation {
+    margin-inline: auto;                    /* sits between the logo and the button */
+    gap: clamp(18px, 2.4vw, 44px);
+    align-items: center;
+  }
+  .site-header .navigation a {
+    position: relative;
+    padding: 6px 0;
+    font-size: clamp(14px, 1.15vw, 19px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: #e6e6ef;
+    white-space: nowrap;
+    border-bottom: 0;
+  }
+  .site-header .navigation a:hover { color: var(--cyan); }
+  .site-header .navigation a.active { color: var(--cyan); border-bottom: 0; }
+  .site-header .navigation a.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;                            /* ≈ 8px below the text (box has 6px padding) */
+    height: 2px;
+    background: var(--cyan);
+    border-radius: 2px;
+  }
+
+  .site-header .header-cta {
+    min-height: clamp(44px, 3.4vw, 56px);
+    padding-inline: clamp(22px, 2vw, 36px);
+    font-size: clamp(14px, 1.1vw, 18px);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Section titles + Journey section
+   ═══════════════════════════════════════════════════════════════════════ */
+.section-title { font-weight: 700; letter-spacing: -0.01em; }
+
+.journey {
+  --D: clamp(72px, 6vw, 104px);                       /* circle diameter */
+  background: linear-gradient(180deg, #0f1526 0%, #0c0d11 100%);
+  border-top: 1px solid #1e2030;
+}
+.journey .section-title { font-size: clamp(26px, 2.6vw, 40px); }
+
+/* 4 steps across ~80% of the container, centred */
+.journey .journey-grid {
+  position: relative;
+  width: 80%;
+  margin-inline: auto;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+/* Connector: one free-flowing path from the centre of step 1 to the centre of
+   step 4 (12.5% → 87.5%), centred on the circles' centre line. The opaque
+   circles sit on top and hide its ends. */
+.journey .journey-wave {
+  position: absolute;
+  z-index: 0;
+  left: 12.5%;                              /* centre of step 1 … */
+  width: 75%;                               /* … to centre of step 4 */
+  height: calc(var(--D) * .6);              /* 60 viewBox units; max bend ≈ 28% of the circle radius */
+  top: calc(var(--D) * .2);                 /* viewBox y=30 sits exactly on the circle centre (D/2) */
+  overflow: visible;
+  pointer-events: none;
+}
+
+.journey .journey-step { position: relative; z-index: 1; padding: 0 8px; }
+
+.step-assess   { --c: #06c8d4; --rgb: 6, 200, 212;   --tint: #b6f7fb; --ring2: #82e3e9; }
+.step-develop  { --c: #14b8a6; --rgb: 20, 184, 166;  --tint: #baf8f1; --ring2: #89dbd2; }
+.step-apply    { --c: #7c6cf6; --rgb: 124, 108, 246; --tint: #bfb7fb; --ring2: #beb5fa; }
+.step-progress { --c: #b44fe0; --rgb: 180, 79, 224;  --tint: #e3bef4; --ring2: #d9a7ef; }
+
+.journey .journey-step .journey-icon {
+  width: var(--D);
+  height: var(--D);
+  margin: 0 auto 14px;
+  display: grid;
+  place-items: center;
+  font-size: 0;
+  color: var(--tint);
+  border: 2.5px solid transparent;                     /* gradient ring via border-box layer */
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(var(--rgb), .25) 0%, rgba(var(--rgb), 0) 100%) padding-box,
+    linear-gradient(#0f1424, #0f1424) padding-box,
+    linear-gradient(135deg, var(--c), var(--ring2)) border-box;
+  box-shadow: 0 0 18px rgba(var(--rgb), .45);
+}
+.journey-icon svg { width: 45%; height: 45%; stroke-width: 2.2px; }
+.journey-icon svg * { vector-effect: non-scaling-stroke; }
+
+.journey .journey-step h3 {
+  margin: 0 0 6px;
+  font-size: clamp(16px, 1.3vw, 21px);
+  font-weight: 700;
+  color: #fff;
+}
+.journey .journey-step p {
+  max-width: 140px;
+  margin: 0 auto;
+  font-size: clamp(13px, 1vw, 16px);
+  line-height: 1.4;
+  color: #c7c7d7;
+}
+
+/* Mobile: 2 × 2, no wavy line */
+@media (max-width: 767px) {
+  .journey { --D: clamp(64px, 16vw, 84px); }
+  .journey .journey-grid {
+    width: 100%;
+    max-width: 520px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 12px;
+  }
+  .journey .journey-wave { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Five Pillars — skewed cards (all four corners rounded), saturated overlays
+   ═══════════════════════════════════════════════════════════════════════ */
+.pillars { background: linear-gradient(180deg, #0f1526 0%, #0c0d11 100%); }
+
+.pillars .pillar-grid {
+  --sk: 12deg;
+  --gap: clamp(8px, 0.8vw, 14px);
+  /* Skew overhang per side = (height × tan(skew)) / 2 = 0.17 × card width (height = 1.6 × width).
+     Padding of that size keeps the skewed cards inside the container, so left and right margins
+     equal the title/header margins. 5 cards, 4 gaps: pad = 0.03185 × (width − 4 gaps). */
+  width: 100%;
+  padding-inline: calc((100% - 4 * var(--gap)) * .03185);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--gap);
+}
+
+.pillars .pillar-grid .pillar-card {
+  position: relative;
+  height: auto;
+  aspect-ratio: 1 / 1.6;                                   /* taller and narrower */
+  clip-path: none;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #13141c;
+  transform: skewX(calc(var(--sk) * -1));
+  transition: transform .3s ease;
+  container-type: inline-size;                             /* icon size follows card width */
+  --g1: 30, 127, 216;  --g2: 10, 165, 192;
+}
+.pillars .pillar-grid .pillar-card:hover { transform: translateY(-4px) skewX(calc(var(--sk) * -1)); }
+
+.pillars .pillar-card.pillar-personality  { --g1: 30, 127, 216;  --g2: 10, 165, 192; }
+.pillars .pillar-card.pillar-cognitive    { --g1: 15, 158, 142;  --g2: 20, 184, 166; }
+.pillars .pillar-card.pillar-emotional    { --g1: 124, 58, 237;  --g2: 167, 139, 250; }
+.pillars .pillar-card.pillar-adaptability { --g1: 240, 138, 75;  --g2: 245, 158, 107; }
+.pillars .pillar-card.pillar-social       { --g1: 109, 75, 220;  --g2: 139, 92, 246; }
+
+/* Photo: counter-skewed so it stays upright, scaled/widened so it fills the slanted shape. */
+.pillars .pillar-grid .pillar-card img {
+  position: absolute;
+  top: 0;
+  left: -8.5%;
+  width: 117%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 0;
+  filter: none;
+  transform: skewX(var(--sk)) scale(1.15);
+  transform-origin: 50% 0;                                 /* grow downwards so heads are never cropped */
+  transition: transform .4s ease;
+}
+.pillars .pillar-grid .pillar-card:hover img { transform: skewX(var(--sk)) scale(1.2075); }   /* 1.15 × 1.05 */
+
+/* Saturated overlay over the photo (replaces the old dark ::after overlays): ~35% at the top, ~85% at the bottom */
+.pillars .pillar-grid .pillar-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(var(--g1), .35) 0%,
+    rgba(var(--g1), .42) 40%,
+    rgba(var(--g2), .85) 100%);
+}
+
+/* Icon + title, centred, kept upright. Icon centre sits at 62% of the card height. */
+.pillars .pillar-grid .pillar-content {
+  --ico: clamp(29px, 15cqw, 48px);                        /* ≈ 15% of the card width */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(62% - var(--ico) / 2);
+  z-index: 2;
+  padding-inline: 6%;
+  text-align: center;
+  transform: skewX(var(--sk));
+}
+.pillars .pillar-icon {
+  display: block;
+  width: var(--ico);
+  margin: 0 auto 10px;
+  color: var(--ic, #fff);
+  filter: drop-shadow(0 0 6px rgba(var(--ic-rgb, 255, 255, 255), .6));
+}
+.pillars .pillar-icon svg { display: block; width: 100%; height: auto; stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.pillars .pillar-icon svg * { vector-effect: non-scaling-stroke; }
+.pillars .pillar-content h3 {
+  margin: 0;
+  font-size: clamp(16px, 1.2vw, 19px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .45);
+}
+
+/* Per-card icon tint + glow (the brain glows most) */
+.pillars .pillar-personality  { --ic: #bfe9ff; --ic-rgb: 191, 233, 255; }
+.pillars .pillar-cognitive    { --ic: #5eead4; --ic-rgb: 94, 234, 212; }
+.pillars .pillar-cognitive .pillar-icon {
+  filter: drop-shadow(0 0 7px rgba(94, 234, 212, .9)) drop-shadow(0 0 14px rgba(94, 234, 212, .55));
+}
+.pillars .pillar-emotional    { --ic: #e9d5ff; --ic-rgb: 233, 213, 255; }
+.pillars .pillar-adaptability { --ic: #fff1e6; --ic-rgb: 255, 241, 230; }
+.pillars .pillar-social       { --ic: #ddd6fe; --ic-rgb: 221, 214, 254; }
+
+/* Tablet 768–1023: 3 + 2, second row centred */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* 3 per row: pad = 0.05091 × (width − 2 gaps) */
+  .pillars .pillar-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    padding-inline: calc((100% - 2 * var(--gap)) * .05091);
+  }
+  .pillars .pillar-grid .pillar-card { grid-column: span 2; }
+  .pillars .pillar-grid .pillar-card:nth-child(4) { grid-column: 2 / span 2; }
+  .pillars .pillar-grid .pillar-card:nth-child(5) { grid-column: 4 / span 2; }
+}
+
+/* Mobile <768: 2 per row, last card centred, gentler skew */
+@media (max-width: 767px) {
+  /* 2 per row, skew 6deg (overhang 0.084 × card width): pad = 0.03878 × (width − 1 gap) */
+  .pillars .pillar-grid {
+    --sk: 6deg;
+    --gap: 10px;
+    padding-inline: calc((100% - var(--gap)) * .03878);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pillars .pillar-grid .pillar-card { grid-column: auto; }
+  .pillars .pillar-grid .pillar-card:last-child {
+    grid-column: 1 / -1;
+    width: calc(50% - 5px);
+    max-width: none;
+    justify-self: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Programs
+   ═══════════════════════════════════════════════════════════════════════ */
+.programs .program-grid { gap: clamp(16px, 1.6vw, 24px); }
+
+.programs .program-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;                              /* content vertically centred */
+  min-height: clamp(220px, 19vw, 300px);
+  padding: clamp(24px, 2.4vw, 36px) clamp(18px, 2vw, 28px);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 16px;
+  background: linear-gradient(160deg, #1b2236, #121828);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);    /* subtle glass edge */
+  text-align: center;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.programs .program-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, .18);
+}
+
+.programs .program-card.elite {
+  border: 1.5px solid #a855f7;
+  background: linear-gradient(160deg, #2a1f4d, #1a1734);
+  box-shadow: 0 0 24px rgba(168, 85, 247, .35), inset 0 0 0 1px rgba(168, 85, 247, .25);
+}
+.programs .program-card.elite:hover {
+  border-color: #c084fc;
+  box-shadow: 0 0 38px rgba(168, 85, 247, .55), inset 0 0 0 1px rgba(168, 85, 247, .35);
+}
+
+/* Icons: coloured line icons with a soft glow */
+.programs .program-icon {
+  --pc: 34, 211, 238;
+  width: clamp(36px, 3vw, 48px);
+  height: clamp(36px, 3vw, 48px);
+  margin: 0;
+  display: block;
+  color: rgb(var(--pc));
+  filter: drop-shadow(0 0 8px rgba(var(--pc), .5));
+}
+.programs .program-card:nth-child(2) .program-icon { --pc: 96, 165, 250; }     /* blue   #60a5fa */
+.programs .program-card.elite .program-icon,
+.programs .program-card.elite:hover .program-icon { --pc: 167, 139, 250; }     /* violet #a78bfa */
+.programs .program-icon svg { display: block; width: 100%; height: 100%; stroke-width: 1.8px; }
+.programs .program-icon svg * { vector-effect: non-scaling-stroke; }
+
+.programs .program-card h3 {
+  margin: 10px 0 0;
+  font-size: clamp(20px, 1.8vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+.programs .program-card p {
+  max-width: 75%;
+  margin: clamp(8px, .8vw, 12px) auto 0;
+  font-size: clamp(14px, 1.15vw, 18px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #c9cad6;
+}
+
+/* Arrow, bottom-right */
+.programs .program-card a {
+  right: clamp(14px, 1.4vw, 20px);
+  bottom: clamp(10px, 1vw, 16px);
+  font-size: clamp(18px, 1.4vw, 22px);
+  line-height: 1;
+  color: #fff;
+}
+@media (max-width: 767px) {
+  .programs .program-card a { right: 8px; bottom: 6px; }   /* keeps the 48px tap area from the mobile rules */
+  .programs .program-card { padding-bottom: 56px; }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .programs .program-card a { display: grid; place-items: center; width: 44px; height: 44px; right: 8px; bottom: 6px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Primary buttons — one gradient for every .btn-primary
+   ═══════════════════════════════════════════════════════════════════════ */
+:root { --btn-gradient: linear-gradient(90deg, #2ee6f2 0%, #6cb6ff 45%, #b46cf6 100%); }
+.btn-primary {
+  background: var(--btn-gradient);
+  color: #0b1020;
+  font-weight: 700;
+  box-shadow: 0 6px 24px rgba(108, 182, 255, .30);
+  transition: transform .18s, filter .18s, box-shadow .18s;
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 30px rgba(108, 182, 255, .42);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Closing banner — a contained card with the same edges as the Programs row
+   ═══════════════════════════════════════════════════════════════════════ */
+.closing-cta {
+  min-height: 0;
+  overflow: visible;
+  background: #121323;                                          /* continues the Programs section background */
+  padding: clamp(24px, 3vw, 48px) 0 clamp(40px, 4.4vw, 72px);
+}
+.closing-cta::after { content: none; }                           /* main.css full-bleed overlay is not used any more */
+
+.cta-card {
+  --card-pad: clamp(18px, 2vw, 28px);                            /* = Programs card horizontal padding */
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: #1b1b35;
+  width: 100%;                                                   /* definite width: min-height must not widen the card via the aspect ratio */
+  aspect-ratio: 3.2 / 1;                                         /* ≈ card width ÷ 3.2 */
+  min-height: 300px;
+  container-type: inline-size;                                   /* type scales with the card width */
+}
+.cta-card > img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 60%;
+  filter: brightness(.95) saturate(.8) contrast(1.05);          /* dusky, nothing neon */
+}
+.cta-card::before {                                              /* muted navy-violet tint over the whole image */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(24, 26, 64, .28);
+}
+.cta-card::after {                                               /* left overlay for the text */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(14, 20, 42, .88) 0%, rgba(14, 20, 42, .6) 32%, rgba(14, 20, 42, 0) 58%);
+}
+
+/* Heading + subtitle on the left, button on the right (on the subtitle's row) */
+.cta-card .closing-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  min-height: 0;
+  padding: 0 var(--card-pad);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-content: center;
+  align-items: center;
+  row-gap: 0;
+  column-gap: clamp(16px, 2vw, 32px);
+}
+.cta-card .closing-content > div { display: contents; }
+.cta-card .closing-content h2 {
+  grid-column: 1; grid-row: 1;
+  margin: 0;
+  font-size: clamp(26px, 4.3cqw, 62px);                          /* "Higher Within?" ≈ 31% of the card width */
+  font-weight: 700;
+  line-height: 1.1;
+}
+.cta-card .closing-content p {
+  grid-column: 1; grid-row: 2;
+  max-width: none;
+  margin: 16px 0 0;
+  font-size: clamp(14px, 1.64cqw, 24px);
+  line-height: 1.4;
+  color: #e6e6ef;
+}
+.cta-card .closing-content .btn {
+  grid-column: 2; grid-row: 2;
+  justify-self: end;
+  align-self: center;
+  margin-top: 16px;
+  min-height: clamp(52px, 4.4vw, 68px);
+  min-width: clamp(200px, 19vw, 300px);
+  padding-inline: clamp(24px, 2.4vw, 40px);
+  font-size: clamp(15px, 1.3vw, 20px);
+  white-space: nowrap;
+}
+
+/* Tablet: shift the photo so the athlete stays clear of the button */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cta-card > img { object-position: 85% 60%; }
+}
+
+/* Mobile <768: card with 16px side margins, text on top, button below, photo underneath */
+@media (max-width: 767px) {
+  .closing-cta { padding-top: 24px; }
+  .cta-card {
+    --card-pad: 20px;
+    --img-h: clamp(240px, 66vw, 380px);
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: auto;
+    min-height: 420px;
+    border-radius: 14px;
+    background: #0d1222;
+  }
+  .cta-card::after { display: none; }
+  .cta-card::before { inset: auto 0 0 0; height: var(--img-h); }   /* tint only over the photo */
+  .cta-card .closing-content {
+    position: relative;
+    inset: auto;
+    order: 1;
+    display: block;
+    padding: 32px var(--card-pad) 24px;
+  }
+  .cta-card .closing-content > div { display: block; }
+  .cta-card .closing-content h2 { font-size: clamp(30px, 9vw, 44px); }
+  .cta-card .closing-content p { font-size: clamp(16px, 4.2vw, 20px); margin-top: 14px; }
+  .cta-card .closing-content .btn { margin-top: 24px; min-height: 52px; min-width: 200px; }
+  .cta-card > img {
+    order: 2;
+    position: relative;
+    inset: auto;
+    height: var(--img-h);
+    object-position: 63% 55%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 22%);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Brand logo (header + footer)
+   ═══════════════════════════════════════════════════════════════════════ */
+.site-header .brand { display: flex; align-items: center; }
+.site-header .brand img {
+  display: block;
+  width: auto;
+  height: clamp(36px, 3vw, 52px);
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+.footer-logo { display: block; flex: none; }
+.footer-logo img { display: block; width: auto; height: 40px; max-width: none; }
+@media (max-width: 767px) {
+  .site-header .brand img { height: 34px; }
+}
